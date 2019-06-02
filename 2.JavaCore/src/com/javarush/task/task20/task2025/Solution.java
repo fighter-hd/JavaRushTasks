@@ -264,7 +264,6 @@ public class Solution {
         }
     }
 
-    //проверить, отрефакторить при необходимости
     private static long isArmstrongNumber(long number) {
         List<Integer> listOfNumber = getDigitsList(number);
 
