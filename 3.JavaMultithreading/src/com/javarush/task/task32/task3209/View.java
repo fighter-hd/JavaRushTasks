@@ -39,6 +39,12 @@ public class View extends JFrame implements ActionListener {
 
     }
 
+    public boolean isHtmlTabSelected() {
+        return tabbedPane.getSelectedIndex() == 0;
+//      или так:
+//        return tabbedPane.getSelectedComponent() == tabbedPane.getComponents()[0];
+    }
+
     public void undo() {
         try {
             undoManager.undo();
