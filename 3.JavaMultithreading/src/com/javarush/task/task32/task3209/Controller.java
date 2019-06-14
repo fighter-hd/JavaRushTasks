@@ -1,7 +1,6 @@
 package com.javarush.task.task32.task3209;
 
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.io.File;
@@ -27,7 +26,7 @@ public class Controller {
     }
 
     public void init() {
-
+        createNewDocument();
     }
 
     public void resetDocument() {
@@ -69,6 +68,11 @@ public class Controller {
     }
 
     public void createNewDocument() {
+        view.selectHtmlTab();
+        resetDocument();
+        view.setTitle("HTML редактор");
+        view.resetUndo();
+        currentFile = null;
     }
 
     public void openDocument() {
