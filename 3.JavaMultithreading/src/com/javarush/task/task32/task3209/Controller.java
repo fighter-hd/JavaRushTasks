@@ -24,6 +24,10 @@ public class Controller {
 
     }
 
+    public HTMLDocument getDocument() {
+        return document;
+    }
+
     public void exit() {
         System.exit(0);
     }

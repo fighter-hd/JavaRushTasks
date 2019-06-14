@@ -45,6 +45,22 @@ public class View extends JFrame implements ActionListener {
 //        return tabbedPane.getSelectedComponent() == tabbedPane.getComponents()[0];
     }
 
+    public void selectHtmlTab() {
+        tabbedPane.setSelectedIndex(0);
+        resetUndo();
+    }
+
+    public void update() {
+        htmlTextPane.setDocument(controller.getDocument());
+    }
+
+    public void showAbout() {
+        JOptionPane.showMessageDialog(this,
+                "Не знаю что тут написать.",
+                "Диалоговое окно",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public void undo() {
         try {
             undoManager.undo();
