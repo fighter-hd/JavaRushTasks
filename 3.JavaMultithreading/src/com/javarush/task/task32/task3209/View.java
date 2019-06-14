@@ -134,7 +134,13 @@ public class View extends JFrame implements ActionListener {
     }
 
     public void selectedTabChanged() {
+        if (tabbedPane.getSelectedIndex() == 0) {
+            controller.setPlainText(plainTextPane.getText());
+        } else {
+            plainTextPane.setText(controller.getPlainText());
+        }
 
+        resetUndo();
     }
 
     public Controller getController() {
