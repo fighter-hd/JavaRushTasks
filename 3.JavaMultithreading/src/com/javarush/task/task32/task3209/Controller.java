@@ -1,12 +1,10 @@
 package com.javarush.task.task32.task3209;
 
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 
 public class Controller {
     private View view;
@@ -82,6 +80,36 @@ public class Controller {
     }
 
     public void saveDocumentAs() {
+        view.selectHtmlTab();
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new HTMLFileFilter());
+
+        int returnVal = chooser.showSaveDialog(view);
+
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            currentFile = chooser.getSelectedFile();
+            view.setTitle(currentFile.getName());
+
+            FileWriter writer = null;
+            try {
+                writer = new FileWriter(currentFile);
+                new HTMLEditorKit().write(writer, document, 0, document.getLength());
+
+            } catch (IOException e) {
+                ExceptionHandler.log(e);
+            } catch (BadLocationException e) {
+                ExceptionHandler.log(e);
+
+            } finally {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    ExceptionHandler.log(e);
+                }
+            }
+        }
+
     }
 
     public void exit() {
