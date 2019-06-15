@@ -27,16 +27,6 @@ public class Controller {
         createNewDocument();
     }
 
-    public void resetDocument() {
-        if (document != null) {
-            document.removeUndoableEditListener(view.getUndoListener());
-        }
-        
-        document = (HTMLDocument) new HTMLEditorKit().createDefaultDocument();
-        document.addUndoableEditListener(view.getUndoListener());
-        view.update();
-    }
-
     public void setPlainText(String text) {
         resetDocument();
         StringReader reader = new StringReader(text);
@@ -71,6 +61,16 @@ public class Controller {
         view.setTitle("HTML редактор");
         view.resetUndo();
         currentFile = null;
+    }
+
+    public void resetDocument() {
+        if (document != null) {
+            document.removeUndoableEditListener(view.getUndoListener());
+        }
+
+        document = (HTMLDocument) new HTMLEditorKit().createDefaultDocument();
+        document.addUndoableEditListener(view.getUndoListener());
+        view.update();
     }
 
     public void openDocument() {
