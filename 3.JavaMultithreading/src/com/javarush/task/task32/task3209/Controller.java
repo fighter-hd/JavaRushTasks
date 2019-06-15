@@ -2,6 +2,7 @@ package com.javarush.task.task32.task3209;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.EditorKit;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.io.*;
@@ -74,9 +75,58 @@ public class Controller {
     }
 
     public void openDocument() {
+        view.selectHtmlTab();
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new HTMLFileFilter());
+
+        int returnVal = chooser.showOpenDialog(view);
+
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            currentFile = chooser.getSelectedFile();
+            resetDocument();
+            view.setTitle(currentFile.getName());
+
+            FileReader reader = null;
+            try {
+                reader = new FileReader(currentFile);
+                new HTMLEditorKit().read(reader, document, 0);
+                view.resetUndo();
+
+            } catch (FileNotFoundException e) {
+                ExceptionHandler.log(e);
+            } catch (IOException e) {
+                ExceptionHandler.log(e);
+            } catch (BadLocationException e) {
+                ExceptionHandler.log(e);
+            }
+        }
     }
 
     public void saveDocument() {
+        view.selectHtmlTab();
+
+        if (currentFile == null) {
+            saveDocumentAs();
+        } else {
+            FileWriter writer = null;
+            try {
+                writer = new FileWriter(currentFile);
+                new HTMLEditorKit().write(writer, document, 0, document.getLength());
+
+            } catch (IOException e) {
+                ExceptionHandler.log(e);
+            } catch (BadLocationException e) {
+                ExceptionHandler.log(e);
+
+            } finally {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    ExceptionHandler.log(e);
+                }
+            }
+        }
     }
 
     public void saveDocumentAs() {
