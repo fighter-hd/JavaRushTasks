@@ -99,6 +99,12 @@ public class Controller {
                 ExceptionHandler.log(e);
             } catch (BadLocationException e) {
                 ExceptionHandler.log(e);
+            } finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    ExceptionHandler.log(e);
+                }
             }
         }
     }
