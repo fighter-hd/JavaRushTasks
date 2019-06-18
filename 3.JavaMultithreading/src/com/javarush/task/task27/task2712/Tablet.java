@@ -18,6 +18,11 @@ public class Tablet extends Observable {
     public Order createOrder() {
         try {
             Order order = new Order(this);
+
+            if (order.isEmpty()) {
+                return null;
+            }
+
             ConsoleHelper.writeMessage(order.toString());
             setChanged();
             notifyObservers(order);
