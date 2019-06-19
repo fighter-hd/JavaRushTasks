@@ -29,22 +29,4 @@ public class AdvertisementStorage {
     public void add(Advertisement advertisement) {
         videos.add(advertisement);
     }
-
-
-    //    private static volatile AdvertisementStorage instance;
-//
-//    private AdvertisementStorage() {
-//    }
-//
-//    public static AdvertisementStorage getInstance() {
-//        if (instance == null) {
-//            synchronized (AdvertisementStorage.class) {
-//                if (instance == null) {
-//                    instance = new AdvertisementStorage();
-//                }
-//            }
-//        }
-//
-//        return instance;
-//    }
 }
