@@ -53,6 +53,10 @@ public class Order {
         return totalTime;
     }
 
+    public List<Dish> getDishes() {
+        return dishes;
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();

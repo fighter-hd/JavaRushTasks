@@ -1,6 +1,8 @@
 package com.javarush.task.task27.task2712.ad;
 
 import com.javarush.task.task27.task2712.ConsoleHelper;
+import com.javarush.task.task27.task2712.statistic.StatisticManager;
+import com.javarush.task.task27.task2712.statistic.event.VideoSelectedEventDataRow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +30,23 @@ public class AdvertisementManager {
 
         List<Advertisement> videosToShow = createVideosListForDisplaying(availableAdvertisements);
         videosAmountSorting(videosToShow);
+
+        createStatistic(videosToShow);
+
         displayingVideos(videosToShow);
+    }
+
+    private void createStatistic(List<Advertisement> videosToShow) {
+        long amount = 0;
+        int totalDuration = 0;
+
+        for (Advertisement advertisement : videosToShow) {
+            amount += advertisement.getAmountPerOneDisplaying();
+            totalDuration += advertisement.getDuration();
+        }
+
+        StatisticManager statisticManager = StatisticManager.getInstance();
+        statisticManager.register(new VideoSelectedEventDataRow(videosToShow, amount, totalDuration));
     }
 
     private List<Advertisement> createVideosListForDisplaying(List<Advertisement> availableAdvertisements) {
