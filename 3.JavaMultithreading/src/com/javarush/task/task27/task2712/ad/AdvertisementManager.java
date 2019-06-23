@@ -1,6 +1,8 @@
 package com.javarush.task.task27.task2712.ad;
 
 import com.javarush.task.task27.task2712.ConsoleHelper;
+import com.javarush.task.task27.task2712.statistic.StatisticManager;
+import com.javarush.task.task27.task2712.statistic.event.VideoSelectedEventDataRow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +30,23 @@ public class AdvertisementManager {
 
         List<Advertisement> videosToShow = createVideosListForDisplaying(availableAdvertisements);
         videosAmountSorting(videosToShow);
+
+        createStatistic(videosToShow);
+
         displayingVideos(videosToShow);
+    }
+
+    private void createStatistic(List<Advertisement> videosToShow) {
+        long amount = 0;
+        int totalDuration = 0;
+
+        for (Advertisement advertisement : videosToShow) {
+            amount += advertisement.getAmountPerOneDisplaying();
+            totalDuration += advertisement.getDuration();
+        }
+
+        StatisticManager statisticManager = StatisticManager.getInstance();
+        statisticManager.register(new VideoSelectedEventDataRow(videosToShow, amount, totalDuration));
     }
 
     private List<Advertisement> createVideosListForDisplaying(List<Advertisement> availableAdvertisements) {
@@ -172,42 +190,42 @@ public class AdvertisementManager {
     }
 
     private void videosAmountSorting(List<Advertisement> videos) {
-    Comparator<Advertisement> comparatorPerOneSecond = new Comparator<Advertisement>() {
-        @Override
-        public int compare(Advertisement o1, Advertisement o2) {
-            long cost1 = o1.getAmountPerOneSecond();
-            long cost2 = o2.getAmountPerOneSecond();
+        Comparator<Advertisement> comparatorPerOneSecond = new Comparator<Advertisement>() {
+            @Override
+            public int compare(Advertisement o1, Advertisement o2) {
+                long cost1 = o1.getAmountPerOneSecond();
+                long cost2 = o2.getAmountPerOneSecond();
 
-            if (cost1 == cost2)
-                return 0;
+                if (cost1 == cost2)
+                    return 0;
 
-            if (cost1 > cost2) {
-                return -1;
-            } else {
-                return 1;
+                if (cost1 > cost2) {
+                    return -1;
+                } else {
+                    return 1;
+                }
             }
-        }
-    };
+        };
 
-    Comparator<Advertisement> comparatorPerOneDisplaying = new Comparator<Advertisement>() {
-        @Override
-        public int compare(Advertisement o1, Advertisement o2) {
-            long cost1 = o1.getAmountPerOneDisplaying();
-            long cost2 = o2.getAmountPerOneDisplaying();
+        Comparator<Advertisement> comparatorPerOneDisplaying = new Comparator<Advertisement>() {
+            @Override
+            public int compare(Advertisement o1, Advertisement o2) {
+                long cost1 = o1.getAmountPerOneDisplaying();
+                long cost2 = o2.getAmountPerOneDisplaying();
 
-            if (cost1 == cost2)
-                return comparatorPerOneSecond.compare(o1, o2);
+                if (cost1 == cost2)
+                    return comparatorPerOneSecond.compare(o1, o2);
 
-            if (cost1 > cost2) {
-                return -1;
-            } else {
-                return 1;
+                if (cost1 > cost2) {
+                    return -1;
+                } else {
+                    return 1;
+                }
             }
-        }
-    };
+        };
 
-    Collections.sort(videos, comparatorPerOneDisplaying);
-}
+        Collections.sort(videos, comparatorPerOneDisplaying);
+    }
 
     private void displayingVideos(List<Advertisement> videos) {
         for (Advertisement video : videos) {
