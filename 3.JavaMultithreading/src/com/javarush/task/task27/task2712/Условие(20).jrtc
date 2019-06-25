@@ -9,7 +9,7 @@ taskKey="com.javarush.task.task27.task2712.big20"\n\nРесторан(20)
 
 Мы пойдем по второму пути.
 1. В корне задачи-проекта создай класс OrderManager, который будет Observer для планшетов.
-2. В классе OrderManager создай поле orderQueue типа LinkedBlockingQueue<Order>. В него складывай все заказы, поступающие в метод update.
+2. В классе OrderManager создай поле queue типа LinkedBlockingQueue<Order>. В него складывай все заказы, поступающие в метод update.
 3. Класс Cook теперь - НЕ Observer.
 4. В классе Cook создай метод void startCookingOrder(Order order), в который перенеси логику из метода update.
 5. Удали метод update из класса Cook.
@@ -18,7 +18,7 @@ taskKey="com.javarush.task.task27.task2712.big20"\n\nРесторан(20)
 
 Требования:
 1.	Класс OrderManager должен поддерживать интерфейс Observer.
-2.	Заказы поступающие в OrderManager должны добавляться в очередь orderQueue.
+2.	Заказы поступающие в OrderManager должны добавляться в очередь queue.
 3.	Класс Cook не должен поддерживать интерфейс Observer.
 4.	В классе Cook должен быть метод public void startCookingOrder(Order order).
 5.	Из класса Cook должен быть удален метод update.
