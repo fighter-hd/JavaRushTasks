@@ -16,6 +16,8 @@ public class AdvertisementStorage {
         videos.add(new Advertisement(someContent, "Sixth Video", 2000, 100 / 13, 13 * 60)); //13 min
         videos.add(new Advertisement(someContent, "Seventh Video", 2000, 100 / 15, 15 * 60)); //15 min
         videos.add(new Advertisement(someContent, "Eighth Video", 2000, 100 / 2, 2 * 60)); //2 min
+        videos.add(new Advertisement(someContent, "восьмое Video", 2000, 100 / 2, 2 * 60)); //2 min
+        videos.add(new Advertisement(someContent, "девятое Video", 2000, 100 / 2, 2 * 60)); //2 min
 
 //        videos.add(new Advertisement(someContent, "First Video", 5000, 100, 3 * 60)); // 3 min
 //        videos.add(new Advertisement(someContent, "Second Video", 100, 10, 15 * 60)); //15 min

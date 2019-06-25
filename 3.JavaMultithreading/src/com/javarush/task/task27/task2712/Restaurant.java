@@ -4,14 +4,30 @@ import com.javarush.task.task27.task2712.kitchen.Cook;
 import com.javarush.task.task27.task2712.kitchen.Waiter;
 
 public class Restaurant {
+    private final static int ORDER_CREATING_INTERVAL = 100;
+
     public static void main(String[] args) {
-        Cook cook = new Cook("Махмуд");
-        cook.addObserver(new Waiter());
+        Waiter waiter = new Waiter();
 
-        Tablet tablet = new Tablet(1);
-        tablet.addObserver(cook);
+        Cook cook1 = new Cook("Махмуд");
+        Cook cook2 = new Cook("Фатуш");
+        cook1.addObserver(waiter);
+        cook2.addObserver(waiter);
 
-        tablet.createOrder();
+        Tablet tablet1 = new Tablet(1);
+        Tablet tablet2 = new Tablet(2);
+        Tablet tablet3 = new Tablet(3);
+        Tablet tablet4 = new Tablet(4);
+
+        tablet1.addObserver(cook1);
+        tablet2.addObserver(cook1);
+        tablet3.addObserver(cook2);
+        tablet4.addObserver(cook2);
+
+        tablet1.createTestOrder();
+        tablet2.createTestOrder();
+        tablet3.createTestOrder();
+        tablet4.createTestOrder();
 
         DirectorTablet directorTablet = new DirectorTablet();
         directorTablet.printAdvertisementProfit();
