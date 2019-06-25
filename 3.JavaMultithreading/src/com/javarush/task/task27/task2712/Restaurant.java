@@ -23,12 +23,14 @@ public class Restaurant {
         cook1.addObserver(waiter);
         cook2.addObserver(waiter);
 
+        OrderManager orderManager = new OrderManager();
+
         List<Tablet> tablets = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             Tablet tablet = new Tablet(i);
             tablets.add(tablet);
-            tablet.addObserver(cook1);
-            tablet.addObserver(cook2);
+            tablet.addObserver(orderManager);
+            tablet.addObserver(orderManager);
         }
 
         RandomOrderGeneratorTask randomOrderGeneratorTask = new RandomOrderGeneratorTask(tablets, ORDER_CREATING_INTERVAL);
