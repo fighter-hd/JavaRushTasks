@@ -45,9 +45,9 @@ public class Restaurant {
 
         thread.interrupt();
 
-//        DirectorTablet directorTablet = new DirectorTablet();
+        DirectorTablet directorTablet = new DirectorTablet();
 //        directorTablet.printAdvertisementProfit();
-//        directorTablet.printCookWorkloading();
+        directorTablet.printCookWorkloading();
 //        directorTablet.printActiveVideoSet();
 //        directorTablet.printArchivedVideoSet();
     }

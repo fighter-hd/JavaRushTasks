@@ -130,4 +130,8 @@ public class StatisticManager {
             return storage;
         }
     }
+
+    public Set<Cook> getCooks() {
+        return cooks;
+    }
 }
