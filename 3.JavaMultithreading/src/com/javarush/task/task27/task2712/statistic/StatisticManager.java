@@ -13,7 +13,6 @@ import java.util.*;
 
 public class StatisticManager {
     private StatisticStorage statisticStorage = new StatisticStorage();
-    private Set<Cook> cooks = new HashSet();
 
     private StatisticManager() {}
 
@@ -27,12 +26,6 @@ public class StatisticManager {
 
     public void register(EventDataRow data) {
         statisticStorage.put(data);
-    }
-
-    public void register(Cook cook) {
-        if (cook != null) {
-            cooks.add(cook);
-        }
     }
 
     public Map<Date, Long> getAdvertisementStatistic() {
