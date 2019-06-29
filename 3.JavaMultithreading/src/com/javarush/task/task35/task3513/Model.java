@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Model {
     private static final int FIELD_WIDTH = 4;
-    private Tile[][] gameTiles = gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
+    private Tile[][] gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
     int maxTile;
     int score;
 
@@ -107,6 +107,19 @@ public class Model {
         return isChanged;
     }
 
+    private void rotateClockwiseBy90() {
+        int length = gameTiles.length;
+        Tile[][] turnedGameTiles = new Tile[length][length];
+
+        for (int row = 0; row < length; row++) {
+            for (int column = 0; column < length; column++) {
+                turnedGameTiles[column][length - 1 - row] = gameTiles[row][column];
+            }
+        }
+
+        gameTiles = turnedGameTiles;
+    }
+
     void left() {
         boolean hasChange = false;
         for (Tile[] tiles : gameTiles) {
@@ -118,14 +131,48 @@ public class Model {
             addTile();
     }
 
+    void right() {
+        rotateClockwiseBy90();
+        rotateClockwiseBy90();
+
+        left();
+
+        rotateClockwiseBy90();
+        rotateClockwiseBy90();
+    }
+
+    void up(){
+        rotateClockwiseBy90();
+        rotateClockwiseBy90();
+        rotateClockwiseBy90();
+
+        left();
+
+        rotateClockwiseBy90();
+    }
+
+    void down(){
+        rotateClockwiseBy90();
+
+        left();
+
+        rotateClockwiseBy90();
+        rotateClockwiseBy90();
+        rotateClockwiseBy90();
+    }
+
 //    public static void main(String[] args) {
 //        Model m = new Model();
 //
-////        m.gameTiles = new Tile[][]{{new Tile(0), new Tile(0), new Tile(0), new Tile(0)},
 //        m.gameTiles = new Tile[][]{{new Tile(4), new Tile(4), new Tile(2), new Tile(0)},
 //                                   {new Tile(4), new Tile(2), new Tile(0), new Tile(4)},
 //                                   {new Tile(4), new Tile(4), new Tile(4), new Tile(0)},
 //                                   {new Tile(4), new Tile(4), new Tile(4), new Tile(4)}};
+//
+////        m.gameTiles = new Tile[][]{{new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
+////                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
+////                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
+////                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)}};
 //
 //        for (Tile[] tiles : m.gameTiles) {
 //            for (Tile tile : tiles) {
@@ -136,7 +183,7 @@ public class Model {
 //
 //        System.out.println("=========================================================================================");
 //
-//        m.left();
+//        m.up();
 //
 //        for (Tile[] tiles : m.gameTiles) {
 //            for (Tile tile : tiles) {
