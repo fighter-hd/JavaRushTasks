@@ -71,7 +71,8 @@ public class Model {
         Tile[][] copy = new Tile[size][size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                copy[row][column] = allTiles[row][column];
+                Tile tileCopy = new Tile(allTiles[row][column].value);
+                copy[row][column] = tileCopy;
             }
         }
 
@@ -81,11 +82,10 @@ public class Model {
         isSaveNeeded = false;
     }
 
-    private void rollback() {
+    void rollback() {
         if ( ! previousStates.empty() && ! previousScores.empty()) {
             gameTiles = previousStates.pop();
             score = previousScores.pop();
-            isSaveNeeded = true;
         }
     }
 
@@ -183,6 +183,9 @@ public class Model {
     }
 
     void left() {
+        if (isSaveNeeded)
+            saveState(gameTiles);
+
         boolean hasChange = false;
         for (Tile[] tiles : gameTiles) {
             if (mergeTiles(tiles) | compressTiles(tiles))
@@ -191,9 +194,13 @@ public class Model {
 
         if (hasChange)
             addTile();
+
+        isSaveNeeded = true;
     }
 
     void right() {
+        saveState(gameTiles);
+
         rotateClockwiseBy90();
         rotateClockwiseBy90();
 
@@ -204,6 +211,8 @@ public class Model {
     }
 
     void up(){
+        saveState(gameTiles);
+
         rotateClockwiseBy90();
         rotateClockwiseBy90();
         rotateClockwiseBy90();
@@ -214,6 +223,8 @@ public class Model {
     }
 
     void down(){
+        saveState(gameTiles);
+
         rotateClockwiseBy90();
 
         left();
