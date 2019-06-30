@@ -27,6 +27,39 @@ public class Model {
         addTile();
     }
 
+    public boolean canMove() {
+        if ( ! getEmptyTiles().isEmpty() )
+            return true;
+
+        for (int row = 0; row < gameTiles.length - 1; row++) {
+            for (int column = 0; column < gameTiles.length - 1; column++) {
+                int currentTileValue = gameTiles[row][column].value;
+
+                if (currentTileValue == 0
+                    || currentTileValue == gameTiles[row][column + 1].value
+                    || currentTileValue == gameTiles[row + 1][column].value) {
+                           return true;
+                }
+            }
+        }
+
+        for (int column = 0; column < gameTiles.length - 1; column++) {
+            int currentTileValue = gameTiles[gameTiles.length - 1][column].value;
+
+            if (currentTileValue == 0 || currentTileValue == gameTiles[gameTiles.length - 1][column + 1].value)
+                return true;
+        }
+
+        for (int row = 0; row < gameTiles.length - 1; row++) {
+            int currentTileValue = gameTiles[row][gameTiles.length - 1].value;
+
+            if (currentTileValue == 0 || currentTileValue == gameTiles[row + 1][gameTiles.length - 1].value)
+                return true;
+        }
+
+        return false;
+    }
+
     private List<Tile> getEmptyTiles() {
         List<Tile> emptyTiles = new ArrayList<>();
 
@@ -161,18 +194,22 @@ public class Model {
         rotateClockwiseBy90();
     }
 
+    public Tile[][] getGameTiles() {
+        return gameTiles;
+    }
+
 //    public static void main(String[] args) {
 //        Model m = new Model();
 //
-//        m.gameTiles = new Tile[][]{{new Tile(4), new Tile(4), new Tile(2), new Tile(0)},
-//                                   {new Tile(4), new Tile(2), new Tile(0), new Tile(4)},
-//                                   {new Tile(4), new Tile(4), new Tile(4), new Tile(0)},
-//                                   {new Tile(4), new Tile(4), new Tile(4), new Tile(4)}};
+////        m.gameTiles = new Tile[][]{{new Tile(4), new Tile(4), new Tile(2), new Tile(0)},
+////                                   {new Tile(4), new Tile(2), new Tile(0), new Tile(4)},
+////                                   {new Tile(4), new Tile(4), new Tile(4), new Tile(0)},
+////                                   {new Tile(4), new Tile(4), new Tile(4), new Tile(4)}};
 //
-////        m.gameTiles = new Tile[][]{{new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
-////                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
-////                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
-////                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)}};
+//        m.gameTiles = new Tile[][]{{new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
+//                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
+//                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)},
+//                                   {new Tile(0), new Tile(2), new Tile(4), new Tile(8)}};
 //
 //        for (Tile[] tiles : m.gameTiles) {
 //            for (Tile tile : tiles) {
@@ -183,7 +220,7 @@ public class Model {
 //
 //        System.out.println("=========================================================================================");
 //
-//        m.up();
+//        boolean canMove = m.canMove();
 //
 //        for (Tile[] tiles : m.gameTiles) {
 //            for (Tile tile : tiles) {
@@ -191,6 +228,7 @@ public class Model {
 //            }
 //            System.out.println();
 //        }
+//        System.out.println("\nCan move - " + canMove);
 //
 ////        m.mergeTiles(m.gameTiles[0]);
 ////        m.mergeTiles(m.gameTiles[1]);
