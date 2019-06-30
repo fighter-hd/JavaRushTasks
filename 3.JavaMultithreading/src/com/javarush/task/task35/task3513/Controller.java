@@ -40,6 +40,8 @@ public class Controller extends KeyAdapter {
                 model.down();
             } else if (e.getKeyCode() == KeyEvent.VK_Z) {
                 model.rollback();
+            } else if (e.getKeyCode() == KeyEvent.VK_R) {
+                model.randomMove();
             }
         }
 
