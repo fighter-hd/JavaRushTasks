@@ -256,6 +256,32 @@ public class Model {
         }
     }
 
+    boolean hasBoardChanged() {
+        Tile[][] prevGameTiles = previousStates.peek();
+        Tile[][] currentGameTiles = gameTiles;
+
+        for (int row = 0; row < gameTiles.length; row++) {
+            for (int column = 0; column < gameTiles.length; column++) {
+                if (prevGameTiles[row][column].value != currentGameTiles[row][column].value)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    MoveEfficiency getMoveEfficiency(Move move) {
+        move.move();
+
+        if (!hasBoardChanged())
+            return new MoveEfficiency(-1, 0, move);
+
+        MoveEfficiency result =  new MoveEfficiency(getEmptyTiles().size(), score, move);
+        rollback();
+
+        return result;
+    }
+
     public Tile[][] getGameTiles() {
         return gameTiles;
     }
