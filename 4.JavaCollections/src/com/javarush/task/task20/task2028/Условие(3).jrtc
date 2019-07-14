@@ -1,0 +1,63 @@
+taskKey="com.javarush.task.task20.task2028.big03"\n\nПострой дерево(3)
+
+Класс описывающий дерево мы создали, теперь нужен класс описывающий тип элементов дерева:
+1) В классе CustomTree создай вложенный статический параметризированный класс Entry<T> с модификатором доступа по умолчанию.
+2) Обеспечь поддержку этим классом интерфейса Serializable.
+3) Создай такие поля (модификатор доступа по умолчанию):
+- String elementName;
+- boolean availableToAddLeftChildren, availableToAddRightChildren;
+- Entry<T> parent, leftChild, rightChild;
+- при необходимости, можешь создавать и другие поля;
+4) Реализуй публичный конструктор с одним параметром типа String:
+- установи поле elementName равным полученному параметру;
+- установи поле availableToAddLeftChildren равным true;
+- установи поле availableToAddRightChildren равным true;
+5) Реализуй публичный метод boolean isAvailableToAddChildren, возвращающий дизъюнкцию полей availableToAddLeftChildren и availableToAddRightChildren.
+
+
+Требования:
+1.	Класс CustomTree.Entry должен быть объявлен с модификатором доступа по умолчанию.
+2.	Класс CustomTree.Entry должен поддерживать интерфейс Serializable.
+3.	В классе CustomTree.Entry должно существовать поле elementName типа String.
+4.	В классе CustomTree.Entry должно существовать поле availableToAddLeftChildren типа boolean.
+5.	В классе CustomTree.Entry должно существовать поле availableToAddRightChildren типа boolean.
+6.	В классе CustomTree.Entry должно существовать поле parent типа Entry.
+7.	В классе CustomTree.Entry должно существовать поле leftChild типа Entry.
+8.	В классе CustomTree.Entry должно существовать поле rightChild типа Entry.
+9.	В классе CustomTree.Entry должен быть корректно реализован конструктор с одним параметром типа String (смотри условие).
+10.	В классе CustomTree.Entry должен корректно реализован метод isAvailableToAddChildren (смотри условие).
+
+
+Построй дерево(2)
+
+Несмотря на то что наше дерево является потомком класса AbstractList, это не список в привычном понимании.
+В частности нам недоступны принимающие в качестве параметра индекс элемента.
+Такие методы необходимо переопределить и бросить новое исключение типа UnsupportedOperationException.
+
+Вот их список:
+public String get(int index)
+public String set(int index, String element)
+public void add(int index, String element)
+public String remove(int index)
+public List<String> subList(int fromIndex, int toIndex)
+protected void removeRange(int fromIndex, int toIndex)
+public boolean addAll(int index, Collection<? extends String> c)
+
+
+
+Построй дерево(1)
+
+Амиго, похоже ты уже достаточно окреп. Самое время проверить свои навыки в большой задаче!
+Сегодня реализуем свое дерево немного нестандартным способом(на базе AbstractList).
+Вводную информацию можешь получить используя свой любимый поисковик и текст ниже.
+
+Элементы дерева должны следовать так как показано на картинке:
+http://info.javarush.ru/uploads/images/00/04/89/2014/03/21/ee9a9b.jpg
+
+Для начала сделаем наше дерево потомком класса AbstractList с параметром типа String, а также
+реализуем интерфейсы Cloneable и Serializable.
+
+Реализацию методов get(int index) и size() пока оставь стандартной.
+
+
+
