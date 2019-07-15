@@ -7,7 +7,7 @@ import java.util.*;
 Построй дерево(1)
 */
 public class CustomTree extends AbstractList<String> implements Cloneable, Serializable {
-    Map<Integer, List<Entry<String>>>  tree = new TreeMap<>();
+    Map<Integer, List<Entry<String>>> tree = new TreeMap<>();
     Entry<String> root;
     private int size;
 
@@ -17,6 +17,10 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
 
     @Override
     public boolean add(String s) {
+        if (noAtLeastOneAvailableToAdd()) {
+            refreshAvailableFields();
+        }
+
         if (root.isAvailableToAddChildren()) {
             addFirstDeepElements(s);
 
@@ -30,7 +34,7 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
 
                     for (Entry<String> currentParent : currentParentsDeep) {
                         if (currentParent.isAvailableToAddChildren()) {
-                            List<Entry<String>> childDeepList = tree.get(1);
+                            List<Entry<String>> childDeepList = tree.get(deep);
 
                             if (childDeepList == null) {
                                 childDeepList = new ArrayList<>();
@@ -59,6 +63,47 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
         size++;
 
         return true;
+    }
+
+    private boolean noAtLeastOneAvailableToAdd() {
+        for (int deep = tree.size() + 1; deep > 0; deep--) {
+            if (isAvailableToAddOnCurrentDeep(deep)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void refreshAvailableFields() {
+            int deep = tree.size();
+            List<Entry<String>> currentDeepList = checkDeepList(deep);
+
+
+            if (currentDeepList != null) {
+
+                for (Entry<String> element : currentDeepList) {
+                    if (element.leftChild == null) {
+                        element.availableToAddLeftChildren = true;
+                    }
+
+                    if (element.rightChild == null) {
+                        element.availableToAddRightChildren = true;
+                    }
+                }
+
+            }
+    }
+
+    private List<Entry<String>> checkDeepList(int deep) {
+        List<Entry<String>> currentDeepList = tree.get(deep);
+
+        if (currentDeepList != null && currentDeepList.isEmpty()) {
+            tree.remove(deep);
+            currentDeepList = checkDeepList(deep - 1);
+        }
+
+        return currentDeepList;
     }
 
     private void addFirstDeepElements(String s) {
@@ -91,9 +136,11 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
     private boolean isAvailableToAddOnCurrentDeep(int deep) {
         List<Entry<String>> currentDeepList = tree.get(deep - 1);
 
-        for (Entry<String> element : currentDeepList) {
-            if (element.isAvailableToAddChildren()) {
-                return true;
+        if (currentDeepList != null) {
+            for (Entry<String> element : currentDeepList) {
+                if (element.isAvailableToAddChildren()) {
+                    return true;
+                }
             }
         }
 
@@ -131,6 +178,62 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        if ( ! (o instanceof String)) {
+            throw new UnsupportedOperationException();
+        }
+
+        Entry<String> element = getElement((String) o, root);
+
+        if (element == null) {
+            return false;
+        }
+
+        for (int deep = 1; deep <= tree.size(); deep++) {
+            List<Entry<String>> currentDeepElements = tree.get(deep);
+
+            if (currentDeepElements.contains(element)) {
+                removeElement(element, deep);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void removeElement(Entry<String> removeElement, int deep) {
+        List<Entry<String>> currentDeepList = tree.get(deep);
+
+        Entry<String> leftChild = removeElement.leftChild;
+        Entry<String> rightChild = removeElement.rightChild;
+
+        if (leftChild != null) {
+            removeElement.leftChild = null;
+            removeElement(leftChild, deep + 1);
+        }
+
+        if (rightChild != null) {
+            removeElement.rightChild = null;
+            removeElement(rightChild, deep + 1);
+        }
+
+        removeInParent(removeElement);
+
+        currentDeepList.remove(removeElement);
+        size--;
+    }
+
+    private void removeInParent(Entry<String> removeElement) {
+        Entry<String> parent = removeElement.parent;
+
+        if (parent.leftChild == removeElement) {
+            parent.leftChild = null;
+        } else {
+            parent.rightChild = null;
+        }
     }
 
     static class Entry<T> implements Serializable {
@@ -190,5 +293,16 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
     @Override
     protected void removeRange(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();
+    }
+
+    void treePrint() {
+        for (Map.Entry<Integer, List<Entry<String>>> entry : tree.entrySet()) {
+            System.out.print(entry.getKey() + ": ");
+            for (Entry<String> stringEntry : entry.getValue()) {
+                System.out.print(stringEntry + ", ");
+            }
+
+            System.out.println();
+        }
     }
 }
