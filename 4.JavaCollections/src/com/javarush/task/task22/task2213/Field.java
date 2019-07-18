@@ -25,7 +25,7 @@ public class Field {
     }
 
     void removeFullLines() {
-
+        
     }
 
     Integer getValue(int x, int y) {
