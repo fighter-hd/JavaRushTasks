@@ -12,6 +12,30 @@ public class Field {
         matrix = new int[height][width];
     }
 
+    void print() {
+
+        for (int height = 0; height < matrix.length; height++) {
+
+            for (int width = 0; width < matrix[height].length; width++) {
+                System.out.print(matrix[height][width]);
+            }
+
+            System.out.println();
+        }
+    }
+
+    void removeFullLines() {
+
+    }
+
+    Integer getValue(int x, int y) {
+        return matrix[y][x];
+    }
+
+    void setValue(int x, int y, int value) {
+        matrix[y][x] = value;
+    }
+
     public int getWidth() {
         return width;
     }
