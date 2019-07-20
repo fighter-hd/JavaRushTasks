@@ -88,6 +88,19 @@ public class Tetris {
         //удаляем заполненные линии
         //создаем новую фигурку
 
+        figure.down();
+
+        if ( ! figure.isCurrentPositionAvailable()) {
+            figure.up();
+            figure.landed();
+
+            if (figure.getY() == 0) {
+                isGameOver = true;
+            }
+
+            field.removeFullLines();
+            figure = FigureFactory.createRandomFigure(field.getWidth() / 2, 0);
+        }
     }
 
     /**

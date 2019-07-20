@@ -1,7 +1,6 @@
 package com.javarush.task.task22.task2213;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Класс Field описывает "поле клеток" игры Тетрис
@@ -106,78 +105,28 @@ public class Field {
      * Удаляем заполненные линии
      */
     public void removeFullLines() {
-        //Например так:
         //Создаем список для хранения линий
+        ArrayList<int[]> lines = new ArrayList<int[]>();
+
         //Копируем все непустые линии в список.
+        for (int i = 0; i < height; i++) {
+            //подсчитываем количество единиц в строке - просто суммируем все ее значения
+            int count = 0;
+            for (int j = 0; j < width; j++) {
+                count += matrix[i][j];
+            }
+
+            //Если сумма строки не равна ее ширине - добавляем в список
+            if (count != width)
+                lines.add(matrix[i]);
+        }
+
         //Добавляем недостающие строки в начало списка.
+        while (lines.size() < height) {
+            lines.add(0, new int[width]);
+        }
+
         //Преобразуем список обратно в матрицу
-
-        //список в который будут записаны не пустые и не полностью заполненные линии
-        List<int[]> lines = new ArrayList<>();
-
-        //запись в список копиц необходимых линий сверху-вниз
-        for (int i = 0; i < matrix.length; i++) {
-            boolean hasEmptyCell = false;
-            boolean hasNonEmptyCell = false;
-
-            for (int j = 0; j < matrix[i].length; j++) {
-                if (matrix[i][j] == 0) {
-                    hasEmptyCell = true;
-
-                } else {
-                    hasNonEmptyCell = true;
-                }
-            }
-
-            //если строка не пустая и не полностью заполнена, то добавляем её копию в список
-            if (hasEmptyCell && hasNonEmptyCell) {
-                int[] lineCopy = new int[width];
-                System.arraycopy(matrix[i], 0, lineCopy, 0, matrix[i].length);
-                lines.add(lineCopy);
-            }
-        }
-
-        //заполняем начало списка пустыми строками
-        int countNeededEmptyLines = height - lines.size();
-
-        for (int i = 0; i < countNeededEmptyLines; i++) {
-            lines.add(i, new int[width]);
-        }
-
-        //перезаписываем готовый список обратно в матрицу
-        for (int height = 0; height < matrix.length; height++) {
-            int[] currentLine = lines.get(height);
-
-            for (int width = 0; width < currentLine.length; width++) {
-                matrix[height][width] = currentLine[width];
-            }
-        }
+        matrix = lines.toArray(new int[height][width]);
     }
-
-//    public static void main(String[] args) {
-//        Field field = new Field(6, 4);
-//
-//        int[][] m =           {{0,0,0,0},
-//                               {0,0,0,0},
-//                               {1,0,1,1},
-//                               {0,2,2,2},
-//                               {1,1,1,1},
-//                               {2,2,2,2}};
-//
-//        field.matrix = m;
-//
-//        field.myPrint();
-//        field.removeFullLines();
-//        field.myPrint();
-//    }
-//
-//    private void myPrint() {
-//        System.out.println("----------------------------------------------------------------------------------------");
-//        for (int height = 0; height < matrix.length; height++) {
-//            for (int width = 0; width < matrix[height].length; width++) {
-//                System.out.print(" " + matrix[height][width] + " ");
-//            }
-//            System.out.println();
-//        }
-//    }
 }
