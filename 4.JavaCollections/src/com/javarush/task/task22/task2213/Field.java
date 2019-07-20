@@ -17,7 +17,12 @@ public class Field {
         for (int height = 0; height < matrix.length; height++) {
 
             for (int width = 0; width < matrix[height].length; width++) {
-                System.out.print(matrix[height][width]);
+                if (matrix[height][width] == 0) {
+                    System.out.print(".");
+
+                } else {
+                    System.out.print("X");
+                }
             }
 
             System.out.println();
