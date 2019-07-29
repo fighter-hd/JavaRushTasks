@@ -24,12 +24,33 @@ public class Canvas {
 
         for (int height = 0; height < matrix.length; height++) {
             for (int width = 0; width < matrix[height].length; width++) {
-
+                
                 if (matrix[height][width] != 0) {
                     setPoint(x + width, y + height, c);
                 }
             }
         }
+    }
+
+    public void clear() {
+        for (int height = 0; height < matrix.length; height++) {
+            for (int width = 0; width < matrix[height].length; width++) {
+                matrix[height][width] = ' ';
+            }
+        }
+    }
+
+    public void print() {
+        for (int height = 0; height < matrix.length; height++) {
+
+            for (int width = 0; width < matrix[height].length; width++) {
+                System.out.print(matrix[height][width]);
+            }
+
+            System.out.println();
+        }
+
+        System.out.println("==========================================================================================");
     }
 
     public int getWidth() {
