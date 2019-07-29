@@ -1,37 +1,20 @@
 package com.javarush.task.task25.task2515;
 
-import java.util.Random;
-
+/**
+ * Класс для НЛО
+ */
 public class Ufo extends BaseObject {
-    //картинка НЛО для отрисовки
+    //картинка для отрисовки
     private static int[][] matrix = {
             {0, 0, 0, 0, 0},
             {0, 0, 1, 0, 0},
-            {0, 0, 1, 0, 0},
-            {1, 0, 1, 0, 1},
             {1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 0},
+            {0, 0, 0, 0, 0},
     };
-
-    //вектор движения (-1 верх,+1 вниз)
-    private double dy = Math.random() * 2 - 1; //-1..1
-
-    //вектор движения (-1 влево,+1 вправо)
-    private double dx = Math.random() * 2 - 1; //-1..1
 
     public Ufo(double x, double y) {
         super(x, y, 3);
-    }
-
-    public void move() {
-        this.y += dy;
-        this.x += dx;
-
-        checkBorders(radius, Space.game.getWidth() - radius + 1,
-                     radius, (Space.game.getHeight() - radius + 1) / 2);
-
-        if (Math.random() > 0.9) {
-            fire();
-        }
     }
 
     /**
@@ -42,7 +25,29 @@ public class Ufo extends BaseObject {
         canvas.drawMatrix(x - radius + 1, y - radius + 1, matrix, 'U');
     }
 
+    /**
+     * Двигаем себя на один ход в случайном направлении.
+     */
+    @Override
+    public void move() {
+        double dx = Math.random() * 2 - 1;
+        double dy = Math.random() * 2 - 1;
+
+        x += dx;
+        y += dy;
+
+        checkBorders(radius, Space.game.getWidth() - radius + 1, radius - 1, Space.game.getHeight() / 2 - 1);
+
+        int random10 = (int) (Math.random() * 10);
+        if (random10 == 0)
+            fire();
+    }
+
+    /**
+     * Стреляем.
+     * Сбрасываем(создаем) одну бомбу прямо под собой.
+     */
     public void fire() {
-        Space.game.getBombs().add(new Bomb(x, y + radius));
+        Space.game.getBombs().add(new Bomb(x, y + 3));
     }
 }
