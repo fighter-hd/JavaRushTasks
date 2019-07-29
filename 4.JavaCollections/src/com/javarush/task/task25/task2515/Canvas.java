@@ -8,49 +8,48 @@ public class Canvas {
     public Canvas(int width, int height) {
         this.width = width;
         this.height = height;
-        matrix = new char[height][width];
+        this.matrix = new char[height + 2][width + 2];
     }
 
-    public void setPoint(double x, double y, char c) {
-        int intX = (int) Math.round(x);
-        int intY = (int) Math.round(y);
-
-        if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
-            matrix[intY][intX] = c;
-        }
+    public void clear() {
+        this.matrix = new char[height + 2][width + 2];
     }
 
     public void drawMatrix(double x, double y, int[][] matrix, char c) {
-
-        for (int height = 0; height < matrix.length; height++) {
-            for (int width = 0; width < matrix[height].length; width++) {
-                
-                if (matrix[height][width] != 0) {
-                    setPoint(x + width, y + height, c);
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] != 0) {
+                    setPoint(x + j, y + i, c);
                 }
             }
         }
     }
 
-    public void clear() {
-        for (int height = 0; height < matrix.length; height++) {
-            for (int width = 0; width < matrix[height].length; width++) {
-                matrix[height][width] = ' ';
-            }
+    public void setPoint(double x, double y, char c) {
+        int xRounded = (int) Math.round(x);
+        int yRounded = (int) Math.round(y);
+
+        if (xRounded >= 0 && xRounded < matrix[0].length && yRounded >= 0 && yRounded < matrix.length) {
+            matrix[yRounded][xRounded] = c;
         }
     }
 
     public void print() {
-        for (int height = 0; height < matrix.length; height++) {
+        System.out.println();
 
-            for (int width = 0; width < matrix[height].length; width++) {
-                System.out.print(matrix[height][width]);
+        for (int i = 0; i < height + 2; i++) {
+            for (int j = 0; j < width + 2; j++) {
+                System.out.print(" ");
+                System.out.print(matrix[i][j]);
+                System.out.print(" ");
             }
 
             System.out.println();
         }
 
-        System.out.println("==========================================================================================");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     public int getWidth() {
