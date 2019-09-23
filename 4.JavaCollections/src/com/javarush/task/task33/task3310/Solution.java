@@ -15,6 +15,8 @@ public class Solution {
         System.out.println("=========================================================================================");
         testStrategy(new OurHashBiMapStorageStrategy(), 10_000);
         System.out.println("=========================================================================================");
+        testStrategy(new HashBiMapStorageStrategy(), 10_000);
+        System.out.println("=========================================================================================");
         testStrategy(new FileStorageStrategy(), 100);
         System.out.println("=========================================================================================");
     }
