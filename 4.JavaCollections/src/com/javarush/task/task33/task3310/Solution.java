@@ -19,7 +19,7 @@ public class Solution {
         System.out.println("=========================================================================================");
         testStrategy(new DualHashBidiMapStorageStrategy(), 10_000);
         System.out.println("=========================================================================================");
-        testStrategy(new FileStorageStrategy(), 100);
+        testStrategy(new FileStorageStrategy(), 3);
         System.out.println("=========================================================================================");
     }
 
