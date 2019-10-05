@@ -1,9 +1,6 @@
 package com.javarush.task.task39.task3913;
 
-import com.javarush.task.task39.task3913.query.DateQuery;
-import com.javarush.task.task39.task3913.query.EventQuery;
-import com.javarush.task.task39.task3913.query.IPQuery;
-import com.javarush.task.task39.task3913.query.UserQuery;
+import com.javarush.task.task39.task3913.query.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -14,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
+public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQuery {
     private List<File> logFiles;
     private List<LogEntry> logEntries;
 
@@ -163,6 +160,7 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
 /*
     UserQuery implementation
 */
+
     @Override
     public Set<String> getAllUsers() {
         return getLogEntries().stream()
@@ -280,10 +278,10 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
                         (set1, set2)->set1.addAll(set2));
     }
 
-
 /*
     DateQuery implementation
 */
+
     @Override
     public Set<Date> getDatesForUserAndEvent(String user, Event event, Date after, Date before) {
         return getLogEntriesInGivenPeriodOfTime(after, before)
@@ -496,6 +494,51 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
                             .filter(e -> e.getEvent().equals(Event.DONE_TASK))
                             .filter(e -> e.getTaskNumber() == task)
                             .count();
+    }
+
+/*
+    QLQuery implementation
+*/
+
+    @Override
+    public Set<Object> execute(String query) {
+        String[] queryElements = query.split(" ");
+
+        String currentQuery;
+        if (queryElements.length == 2) {
+            currentQuery = queryElements[1];
+        } else {
+            return new HashSet<>();
+        }
+
+        switch (currentQuery) {
+            case "ip":
+                return new HashSet<>(getUniqueIPs(null, null));
+
+            case "user":
+                return new HashSet<>(getAllUsers());
+
+            case "date":
+                return new HashSet<>(getLogEntries()
+                        .stream()
+                        .collect(
+                                ()->new HashSet<>(),
+                                (set, item)->set.add(new Date(item.getDate())),
+                                (set1, set2)->set1.addAll(set2)));
+
+            case "event":
+                return new HashSet<>(getAllEvents(null, null));
+
+            case "status":
+                return new HashSet<>(getLogEntries()
+                        .stream()
+                        .collect(
+                                ()->new HashSet<>(),
+                                (set, item)->set.add(item.getStatus()),
+                                (set1, set2)->set1.addAll(set2)));
+        }
+
+        return new HashSet<>();
     }
 
     public class LogEntry {

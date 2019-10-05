@@ -305,6 +305,7 @@ public class LogParserTest {
         Set<String> actual1 = logParser.getWroteMessageUsers(null, null);
 
         Set<String> expected1 = new HashSet<>();
+        expected1.add("Amigo");
         expected1.add("Vasya Pupkin");
         expected1.add("Eduard Petrovich Morozko");
 
@@ -486,9 +487,11 @@ public class LogParserTest {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
         Date date11 = null;
         Date date12 = null;
+        Date date13 = null;
         try {
             date11 = format.parse("11.12.2013 10:11:12");
-            date12 = format.parse("05.01.2021 20:22:55");
+            date12 = format.parse("01.01.2025 00:00:00");
+            date13 = format.parse("05.01.2021 20:22:55");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -496,6 +499,7 @@ public class LogParserTest {
         Set<Date> expected1 = new HashSet<>();
         expected1.add(date11);
         expected1.add(date12);
+        expected1.add(date13);
 
         assertEquals(expected1, actual1);
 
@@ -510,7 +514,7 @@ public class LogParserTest {
 
         Set<Date> actual2 = logParser.getDatesWhenSomethingFailed(start, finish);
         Set<Date> expected2 = new HashSet<>();
-        expected2.add(date12);
+        expected2.add(date13);
 
         assertEquals(expected2, actual2);
     }
@@ -521,14 +525,17 @@ public class LogParserTest {
 
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
         Date date11 = null;
+        Date date12 = null;
         try {
             date11 = format.parse("30.01.2014 12:56:22");
+            date12 = format.parse("21.10.2030 01:00:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         Set<Date> expected1 = new HashSet<>();
         expected1.add(date11);
+        expected1.add(date12);
 
         assertEquals(expected1, actual1);
 
@@ -974,5 +981,68 @@ public class LogParserTest {
         expected2.put(48, 1);
 
         assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void executeTest() {
+        Set<Object> actual1 = logParser.execute("get ip");
+        Set<Object> expected1 = new HashSet<>();
+        expected1.add("127.0.0.1");
+        expected1.add("12.12.12.12");
+        expected1.add("146.34.15.5");
+        expected1.add("192.168.100.2");
+        expected1.add("120.120.120.122");
+        assertEquals(expected1, actual1);
+
+
+        Set<Object> actual2 = logParser.execute("get user");
+        Set<Object> expected2 = new HashSet<>();
+        expected2.add("Amigo");
+        expected2.add("Vasya Pupkin");
+        expected2.add("Eduard Petrovich Morozko");
+        assertEquals(expected2, actual2);
+
+
+        Set<Object> actual3 = logParser.execute("get date");
+        Set<Object> expected3 = new HashSet<>();
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        try {
+            expected3.add(format.parse("30.08.2012 16:08:13"));
+            expected3.add(format.parse("30.08.2012 16:08:40"));
+            expected3.add(format.parse("13.09.2013 5:04:50"));
+            expected3.add(format.parse("11.12.2013 10:11:12"));
+            expected3.add(format.parse("12.12.2013 21:56:30"));
+            expected3.add(format.parse("03.01.2014 03:45:23"));
+            expected3.add(format.parse("21.10.2030 01:00:00"));
+            expected3.add(format.parse("30.01.2014 12:56:22"));
+            expected3.add(format.parse("14.11.2015 07:08:01"));
+            expected3.add(format.parse("01.01.2025 00:00:00"));
+            expected3.add(format.parse("21.10.2030 00:00:00"));
+            expected3.add(format.parse("19.03.2016 00:00:00"));
+            expected3.add(format.parse("05.01.2021 20:22:55"));
+            expected3.add(format.parse("14.10.2021 11:38:21"));
+            expected3.add(format.parse("21.10.2021 19:45:25"));
+            expected3.add(format.parse("29.2.2028 5:4:7"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        assertEquals(expected3, actual3);
+
+        Set<Object> actual4 = logParser.execute("get event");
+        Set<Object> expected4 = new HashSet<>();
+        expected4.add(Event.LOGIN);
+        expected4.add(Event.DOWNLOAD_PLUGIN);
+        expected4.add(Event.WRITE_MESSAGE);
+        expected4.add(Event.SOLVE_TASK);
+        expected4.add(Event.DONE_TASK);
+        assertEquals(expected4, actual4);
+
+
+        Set<Object> actual5 = logParser.execute("get status");
+        Set<Object> expected5 = new HashSet<>();
+        expected5.add(Status.OK);
+        expected5.add(Status.FAILED);
+        expected5.add(Status.ERROR);
+        assertEquals(expected5, actual5);
     }
 }
