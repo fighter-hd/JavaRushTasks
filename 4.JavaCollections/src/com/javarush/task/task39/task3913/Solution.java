@@ -37,10 +37,10 @@ public class Solution {
         System.out.println("testGetUniqueIPs");
 
         Set<String> IPs = logParser.getUniqueIPs(null, null);
-        IPs.stream().forEach(System.out::println);
-
-//        IPs = logParser.getUniqueIPs(null, new Date());
 //        IPs.stream().forEach(System.out::println);
+
+        IPs = logParser.getUniqueIPs(null, new Date());
+        IPs.stream().forEach(System.out::println);
     }
 
     private static void testGetIPsForUser(LogParser logParser) {
@@ -59,13 +59,13 @@ public class Solution {
         System.out.println("\n======================================================================================");
         System.out.print("testGetIPsForEvent");
 
-        Event event = Event.LOGIN;
+//        Event event = Event.LOGIN;
 //        Event event = Event.WRITE_MESSAGE;
-//        Event event = Event.SOLVE_TASK;
+        Event event = Event.SOLVE_TASK;
         System.out.println(": " + event.name());
 
-        Set<String> userIPs = logParser.getIPsForEvent(event, null, null);
-//        Set<String> userIPs = logParser.getIPsForUser(event, null, new Date());
+//        Set<String> userIPs = logParser.getIPsForEvent(event, null, null);
+        Set<String> userIPs = logParser.getIPsForEvent(event, null, new Date());
         userIPs.stream().forEach(System.out::println);
     }
 
@@ -79,7 +79,7 @@ public class Solution {
         System.out.println(": " + status.name());
 
         Set<String> userIPs = logParser.getIPsForStatus(status, null, null);
-//        Set<String> userIPs = logParser.getIPsForUser(status, null, new Date());
+//        Set<String> userIPs = logParser.getIPsForStatus(status, null, new Date());
         userIPs.stream().forEach(System.out::println);
     }
 }
