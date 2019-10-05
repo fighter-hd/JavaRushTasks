@@ -1,6 +1,7 @@
 package com.javarush.task.task39.task3913;
 
 import com.javarush.task.task39.task3913.query.DateQuery;
+import com.javarush.task.task39.task3913.query.EventQuery;
 import com.javarush.task.task39.task3913.query.IPQuery;
 import com.javarush.task.task39.task3913.query.UserQuery;
 
@@ -13,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LogParser implements IPQuery, UserQuery, DateQuery {
+public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
     private List<File> logFiles;
     private List<LogEntry> logEntries;
 
@@ -60,6 +61,21 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
 
         return allEntries;
     }
+
+    public List<LogEntry> getLogEntriesInGivenPeriodOfTime(Date after, Date before) {
+        Long longAfter = getAfterLongDate(after);
+        Long longBefore = getBeforeLongDate(before);
+
+        return logEntries.stream().filter(e -> e.getDate() >= longAfter && e.getDate() <= longBefore)
+                .collect(
+                        () -> new ArrayList<>(),
+                        (list, item) -> list.add(item),
+                        (list1, list2) -> list1.addAll(list2));
+    }
+
+/*
+    IPQuery implementation
+*/
 
     @Override
     public int getNumberOfUniqueIPs(Date after, Date before) {
@@ -113,17 +129,6 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
                         (set1, set2) -> set1.addAll(set2));
     }
 
-    public List<LogEntry> getLogEntriesInGivenPeriodOfTime(Date after, Date before) {
-        Long longAfter = getAfterLongDate(after);
-        Long longBefore = getBeforeLongDate(before);
-
-        return logEntries.stream().filter(e -> e.getDate() >= longAfter && e.getDate() <= longBefore)
-                .collect(
-                        () -> new ArrayList<>(),
-                        (list, item) -> list.add(item),
-                        (list1, list2) -> list1.addAll(list2));
-    }
-
     public Set<String> getAllUsersInGivenPeriodOfTime(Date after, Date before) {
         return getLogEntriesInGivenPeriodOfTime(after, before)
                 .stream()
@@ -155,14 +160,9 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
         return longBefore;
     }
 
-    public List<File> getLogFiles() {
-        return logFiles;
-    }
-
-    public List<LogEntry> getLogEntries() {
-        return logEntries;
-    }
-
+/*
+    UserQuery implementation
+*/
     @Override
     public Set<String> getAllUsers() {
         return getLogEntries().stream()
@@ -280,6 +280,10 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
                         (set1, set2)->set1.addAll(set2));
     }
 
+
+/*
+    DateQuery implementation
+*/
     @Override
     public Set<Date> getDatesForUserAndEvent(String user, Event event, Date after, Date before) {
         return getLogEntriesInGivenPeriodOfTime(after, before)
@@ -383,6 +387,117 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
         return getDatesForUserAndEvent(user, event, after,  before);
     }
 
+/*
+    EventQuery implementation
+*/
+
+    @Override
+    public int getNumberOfAllEvents(Date after, Date before) {
+        return getAllEvents(after, before).size();
+    }
+
+    @Override
+    public Set<Event> getAllEvents(Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .collect(
+                        ()->new HashSet<>(),
+                        (set, item)->set.add(item.getEvent()),
+                        (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public Set<Event> getEventsForIP(String ip, Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getIp().equals(ip))
+                .collect(
+                        ()->new HashSet<>(),
+                        (set, item)->set.add(item.getEvent()),
+                        (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public Set<Event> getEventsForUser(String user, Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getUser().equals(user))
+                .collect(
+                        ()->new HashSet<>(),
+                        (set, item)->set.add(item.getEvent()),
+                        (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public Set<Event> getFailedEvents(Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getStatus().equals(Status.FAILED))
+                .collect(
+                        ()->new HashSet<>(),
+                        (set, item)->set.add(item.getEvent()),
+                        (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public Set<Event> getErrorEvents(Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getStatus().equals(Status.ERROR))
+                .collect(
+                        ()->new HashSet<>(),
+                        (set, item)->set.add(item.getEvent()),
+                        (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public int getNumberOfAttemptToSolveTask(int task, Date after, Date before) {
+        return (int) getLogEntriesInGivenPeriodOfTime(after, before)
+                            .stream()
+                            .filter(e -> e.getEvent().equals(Event.SOLVE_TASK))
+                            .filter(e -> e.getTaskNumber() == task)
+                            .count();
+    }
+
+    @Override
+    public int getNumberOfSuccessfulAttemptToSolveTask(int task, Date after, Date before) {
+        return (int) getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getEvent().equals(Event.DONE_TASK))
+                .filter(e -> e.getTaskNumber() == task)
+                .count();
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllSolvedTasksAndTheirNumber(Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getEvent().equals(Event.SOLVE_TASK))
+                .collect(
+                        ()->new HashMap<>(),
+                        (map, item)->map.put(item.getTaskNumber(), getNumberOfAttemptToSolveTask(item.getTaskNumber(), after, before)),
+                        (map1, map2)->map1.putAll(map2));
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllDoneTasksAndTheirNumber(Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getEvent().equals(Event.DONE_TASK))
+                .collect(
+                        ()->new HashMap<>(),
+                        (map, item)->map.put(item.getTaskNumber(), getNumberOfAttemptToDoneTask(item.getTaskNumber(), after, before)),
+                        (map1, map2)->map1.putAll(map2));
+    }
+
+    private int getNumberOfAttemptToDoneTask(int task, Date after, Date before) {
+        return (int) getLogEntriesInGivenPeriodOfTime(after, before)
+                            .stream()
+                            .filter(e -> e.getEvent().equals(Event.DONE_TASK))
+                            .filter(e -> e.getTaskNumber() == task)
+                            .count();
+    }
+
     public class LogEntry {
         String ip;
         String user;
@@ -390,7 +505,6 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
         Event event;
         Integer taskNumber;
         Status status;
-
         public LogEntry(String ip, String user, String date, String event, String status) {
             this.ip = ip;
             this.user = user;
@@ -501,5 +615,14 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
                     ", status=" + status +
                     '}';
         }
+
+    }
+
+    public List<File> getLogFiles() {
+        return logFiles;
+    }
+
+    public List<LogEntry> getLogEntries() {
+        return logEntries;
     }
 }

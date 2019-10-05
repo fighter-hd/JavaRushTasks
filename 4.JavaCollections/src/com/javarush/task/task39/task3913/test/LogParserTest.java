@@ -712,4 +712,267 @@ public class LogParserTest {
 
         assertEquals(expected2, actual2);
     }
+
+    @Test
+    public void getNumberOfAllEventsTest() {
+        int actual1 = logParser.getNumberOfAllEvents(null, null);
+        int expected1 = 5;
+
+        assertEquals(expected1, actual1);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("12.12.2013 21:56:30");
+            finish = format.parse("14.11.2015 07:08:01");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int actual2 = logParser.getNumberOfAllEvents(start, finish);
+        int expected2 = 3;
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getAllEventsTest() {
+        Set<Event> actual1 = logParser.getAllEvents(null, null);
+        Set<Event> expected1 = new HashSet<>();
+        expected1.add(Event.LOGIN);
+        expected1.add(Event.DONE_TASK);
+        expected1.add(Event.DOWNLOAD_PLUGIN);
+        expected1.add(Event.WRITE_MESSAGE);
+        expected1.add(Event.SOLVE_TASK);
+
+        assertEquals(expected1, actual1);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("12.12.2013 21:56:30");
+            finish = format.parse("14.11.2015 07:08:01");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Event> actual2 = logParser.getAllEvents(start, finish);
+        Set<Event> expected2 = new HashSet<>();
+        expected2.add(Event.LOGIN);
+        expected2.add(Event.WRITE_MESSAGE);
+        expected2.add(Event.SOLVE_TASK);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getEventsForIPTest() {
+        String ip1 = "192.168.100.2";
+        Set<Event> actual1 = logParser.getEventsForIP(ip1, null, null);
+        Set<Event> expected1 = new HashSet<>();
+        expected1.add(Event.DONE_TASK);
+        expected1.add(Event.SOLVE_TASK);
+
+        assertEquals(expected1, actual1);
+
+        String ip2 = "127.0.0.1";
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("30.01.2014 12:56:22");
+            finish = format.parse("14.10.2021 11:38:21");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Event> actual2 = logParser.getEventsForIP(ip2, start, finish);
+        Set<Event> expected2 = new HashSet<>();
+        expected2.add(Event.LOGIN);
+        expected2.add(Event.WRITE_MESSAGE);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getEventsForUserTest() {
+        String user1 = "Eduard Petrovich Morozko";
+        Set<Event> actual1 = logParser.getEventsForUser(user1, null, null);
+        Set<Event> expected1 = new HashSet<>();
+        expected1.add(Event.LOGIN);
+        expected1.add(Event.DOWNLOAD_PLUGIN);
+        expected1.add(Event.DONE_TASK);
+        expected1.add(Event.WRITE_MESSAGE);
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Amigo";
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("30.08.2012 16:08:13");
+            finish = format.parse("21.10.2021 19:45:25");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Event> actual2 = logParser.getEventsForUser(user2, start, finish);
+        Set<Event> expected2 = new HashSet<>();
+        expected2.add(Event.LOGIN);
+        expected2.add(Event.SOLVE_TASK);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getFailedEventsTest() {
+        Set<Event> actual1 = logParser.getFailedEvents(null, null);
+        Set<Event> expected1 = new HashSet<>();
+        expected1.add(Event.DONE_TASK);
+        expected1.add(Event.WRITE_MESSAGE);
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Amigo";
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("05.01.2021 20:22:55");
+            finish = format.parse("01.01.2025 00:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Event> actual2 = logParser.getFailedEvents(start, finish);
+        Set<Event> expected2 = new HashSet<>();
+        expected2.add(Event.DONE_TASK);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getErrorEventsTest() {
+        Set<Event> actual1 = logParser.getErrorEvents(null, null);
+        Set<Event> expected1 = new HashSet<>();
+        expected1.add(Event.SOLVE_TASK);
+        expected1.add(Event.WRITE_MESSAGE);
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Amigo";
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("03.01.2014 03:45:23");
+            finish = format.parse("14.11.2015 07:08:01");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Event> actual2 = logParser.getErrorEvents(start, finish);
+        Set<Event> expected2 = new HashSet<>();
+        expected2.add(Event.SOLVE_TASK);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getNumberOfAttemptToSolveTaskTest() {
+        int task1 = 48;
+        int actual1 = logParser.getNumberOfAttemptToSolveTask(task1,null, null);
+        int expected1 = 0;
+
+        assertEquals(expected1, actual1);
+
+        int task2 = 18;
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("21.10.2021 19:45:25");
+            finish = format.parse("29.2.2028 5:4:7");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int actual2 = logParser.getNumberOfAttemptToSolveTask(task2, start, finish);
+        int expected2 = 2;
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getNumberOfSuccessfulAttemptToSolveTaskTest() {
+        int task1 = 48;
+        int actual1 = logParser.getNumberOfSuccessfulAttemptToSolveTask(task1,null, null);
+        int expected1 = 2;
+
+        assertEquals(expected1, actual1);
+
+        int task2 = 15;
+        int actual2 = logParser.getNumberOfSuccessfulAttemptToSolveTask(task2, null, null);
+        int expected2 = 1;
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getAllSolvedTasksAndTheirNumberTest() {
+        Map<Integer, Integer> actual1 = logParser.getAllSolvedTasksAndTheirNumber(null, null);
+        Map<Integer, Integer> expected1 = new HashMap<>();
+        expected1.put(1, 1);
+        expected1.put(18, 3);
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Amigo";
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("30.08.2012 16:08:40");
+            finish = format.parse("30.01.2014 12:56:22");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Map<Integer, Integer> actual2 = logParser.getAllSolvedTasksAndTheirNumber(start, finish);
+        Map<Integer, Integer> expected2 = new HashMap<>();
+        expected2.put(18, 1);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getAllDoneTasksAndTheirNumberTest() {
+        Map<Integer, Integer> actual1 = logParser.getAllDoneTasksAndTheirNumber(null, null);
+        Map<Integer, Integer> expected1 = new HashMap<>();
+        expected1.put(15, 1);
+        expected1.put(48, 2);
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Amigo";
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("30.08.2012 16:08:40");
+            finish = format.parse("05.01.2021 20:22:55");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Map<Integer, Integer> actual2 = logParser.getAllDoneTasksAndTheirNumber(start, finish);
+        Map<Integer, Integer> expected2 = new HashMap<>();
+        expected2.put(15, 1);
+        expected2.put(48, 1);
+
+        assertEquals(expected2, actual2);
+    }
 }
