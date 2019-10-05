@@ -440,4 +440,276 @@ public class LogParserTest {
 
         assertEquals(expected2, actual2);
     }
+
+    @Test
+    public void getDatesForUserAndEventTest() {
+        String user = "Eduard Petrovich Morozko";
+        Event event = Event.WRITE_MESSAGE;
+        Set<Date> actual1 = logParser.getDatesForUserAndEvent(user, event, null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date date11 = null;
+        Date date12 = null;
+        try {
+            date11 = format.parse("11.12.2013 10:11:12");
+            date12 = format.parse("12.12.2013 21:56:30");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> expected1 = new HashSet<>();
+        expected1.add(date11);
+        expected1.add(date12);
+
+        assertEquals(expected1, actual1);
+
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("12.12.2013 21:00:00");
+            finish = format.parse("12.12.2013 22:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> actual2 = logParser.getDatesForUserAndEvent(user, event, start, finish);
+        Set<Date> expected2 = new HashSet<>();
+        expected2.add(date12);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getDatesWhenSomethingFailedTest() {
+        Set<Date> actual1 = logParser.getDatesWhenSomethingFailed(null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date date11 = null;
+        Date date12 = null;
+        try {
+            date11 = format.parse("11.12.2013 10:11:12");
+            date12 = format.parse("05.01.2021 20:22:55");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> expected1 = new HashSet<>();
+        expected1.add(date11);
+        expected1.add(date12);
+
+        assertEquals(expected1, actual1);
+
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("05.01.2021 20:00:00");
+            finish = format.parse("05.01.2021 22:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> actual2 = logParser.getDatesWhenSomethingFailed(start, finish);
+        Set<Date> expected2 = new HashSet<>();
+        expected2.add(date12);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getDatesWhenErrorHappenedTest() {
+        Set<Date> actual1 = logParser.getDatesWhenErrorHappened(null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date date11 = null;
+        try {
+            date11 = format.parse("30.01.2014 12:56:22");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> expected1 = new HashSet<>();
+        expected1.add(date11);
+
+        assertEquals(expected1, actual1);
+
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("30.01.2014 12:00:00");
+            finish = format.parse("30.01.2014 14:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> actual2 = logParser.getDatesWhenErrorHappened(start, finish);
+        Set<Date> expected2 = new HashSet<>();
+        expected2.add(date11);
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getDateWhenUserLoggedFirstTimeTest() {
+        String user1 = "Vasya Pupkin";
+        Date actual1 = logParser.getDateWhenUserLoggedFirstTime(user1, null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date expected1 = null;
+        try {
+            expected1 = format.parse("14.10.2021 11:38:21");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Eduard Petrovich Morozko";
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("03.01.2014 04:00:00");
+            finish = format.parse("03.01.2014 05:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Date actual2 = logParser.getDateWhenUserLoggedFirstTime(user2, start, finish);
+
+        assertNull(actual2);
+    }
+
+    @Test
+    public void getDateWhenUserSolvedTaskTest() {
+        String user1 = "Amigo";
+        int task1 = 18;
+        Date actual1 = logParser.getDateWhenUserSolvedTask(user1, task1, null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date expected1 = null;
+        try {
+            expected1 = format.parse("21.10.2021 19:45:25");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Eduard Petrovich Morozko";
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("19.03.2016 00:00:00");
+            finish = format.parse("14.10.2021 11:38:21");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int task2 = 48;
+        Date actual2 = logParser.getDateWhenUserSolvedTask(user2, task2, start, finish);
+
+        assertNull(actual2);
+    }
+
+    @Test
+    public void getDateWhenUserDoneTaskTest() {
+        String user1 = "Eduard Petrovich Morozko";
+        int task1 = 48;
+        Date actual1 = logParser.getDateWhenUserDoneTask(user1, task1, null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date expected1 = null;
+        try {
+            expected1 = format.parse("05.01.2021 20:22:55");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(expected1, actual1);
+
+        String user2 = "Vasya Pupkin";
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("10.01.2013 00:00:00");
+            finish = format.parse("14.10.2021 11:38:21");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int task2 = 15;
+        Date actual2 = logParser.getDateWhenUserDoneTask(user2, task2, start, finish);
+
+        assertNull(actual2);
+    }
+
+    @Test
+    public void getDatesWhenUserWroteMessageTest() {
+        String user1 = "Eduard Petrovich Morozko";
+        Set<Date> actual1 = logParser.getDatesWhenUserWroteMessage(user1, null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date date11 = null;
+        Date date12 = null;
+        try {
+            date11 = format.parse("11.12.2013 10:11:12");
+            date12 = format.parse("12.12.2013 21:56:30");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> expected1 = new HashSet<>();
+        expected1.add(date11);
+        expected1.add(date12);
+
+        assertEquals(expected1, actual1);
+
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("05.01.2021 20:00:00");
+            finish = format.parse("05.01.2021 22:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String user2 = "Amigo";
+        Set<Date> actual2 = logParser.getDatesWhenUserWroteMessage(user2, start, finish);
+        Set<Date> expected2 = new HashSet<>();
+
+        assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void getDatesWhenUserDownloadedPluginTest() {
+        String user1 = "Eduard Petrovich Morozko";
+        Set<Date> actual1 = logParser.getDatesWhenUserDownloadedPlugin(user1, null, null);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date date11 = null;
+        try {
+            date11 = format.parse("13.09.2013 5:04:50");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Set<Date> expected1 = new HashSet<>();
+        expected1.add(date11);
+
+        assertEquals(expected1, actual1);
+
+        Date start = null;
+        Date finish = null;
+        try {
+            start = format.parse("05.01.2021 20:00:00");
+            finish = format.parse("05.01.2021 22:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String user2 = "Amigo";
+        Set<Date> actual2 = logParser.getDatesWhenUserDownloadedPlugin(user2, start, finish);
+        Set<Date> expected2 = new HashSet<>();
+
+        assertEquals(expected2, actual2);
+    }
 }

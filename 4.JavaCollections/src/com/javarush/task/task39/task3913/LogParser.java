@@ -1,5 +1,6 @@
 package com.javarush.task.task39.task3913;
 
+import com.javarush.task.task39.task3913.query.DateQuery;
 import com.javarush.task.task39.task3913.query.IPQuery;
 import com.javarush.task.task39.task3913.query.UserQuery;
 
@@ -12,7 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LogParser implements IPQuery, UserQuery {
+public class LogParser implements IPQuery, UserQuery, DateQuery {
     private List<File> logFiles;
     private List<LogEntry> logEntries;
 
@@ -277,6 +278,109 @@ public class LogParser implements IPQuery, UserQuery {
                         ()->new HashSet<>(),
                         (set, item)->set.add(item.getUser()),
                         (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public Set<Date> getDatesForUserAndEvent(String user, Event event, Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                    .stream()
+                    .filter(e -> e.getUser().equals(user))
+                    .filter(e -> e.getEvent().equals(event))
+                    .collect(
+                            ()->new HashSet<>(),
+                            (set, item)->set.add(new Date(item.getDate())),
+                            (set1, set2)->set1.addAll(set2));
+    }
+
+    private Date getDateForUserAndEventFirstTime(String user, Event event, Date after, Date before) {
+        List<LogEntry> entries = getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getUser().equals(user))
+                .filter(e -> e.getEvent().equals(event))
+                .collect(
+                        ()->new ArrayList<>(),
+                        (list, item)->list.add(item),
+                        (list1, list2)->list1.addAll(list2));
+
+        if (entries.size() > 0) {
+            Long firstDate = entries.stream().mapToLong(e -> e.getDate()).min().getAsLong();
+            return new Date(firstDate);
+
+        } else {
+            return null;
+        }
+    }
+
+    private Date getDateWhenUserEventHappendWithTaskFirstTime(String user, Event event, int task, Date after, Date before) {
+        List<Long> solveTaskDates = getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getUser().equals(user))
+                .filter(e -> e.getEvent().equals(event))
+                .filter(e -> e.getTaskNumber() == task)
+                .collect(
+                        ()->new ArrayList<>(),
+                        (list, item)->list.add(item.getDate()),
+                        (list1, list2)->list1.addAll(list2));
+
+        if (solveTaskDates.size() > 0) {
+            Collections.sort(solveTaskDates);
+            return new Date(solveTaskDates.get(0));
+
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Set<Date> getDatesWhenSomethingFailed(Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getStatus().equals(Status.FAILED))
+                .collect(
+                        ()->new HashSet<>(),
+                        (set, item)->set.add(new Date(item.getDate())),
+                        (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public Set<Date> getDatesWhenErrorHappened(Date after, Date before) {
+        return getLogEntriesInGivenPeriodOfTime(after, before)
+                .stream()
+                .filter(e -> e.getStatus().equals(Status.ERROR))
+                .collect(
+                        ()->new HashSet<>(),
+                        (set, item)->set.add(new Date(item.getDate())),
+                        (set1, set2)->set1.addAll(set2));
+    }
+
+    @Override
+    public Date getDateWhenUserLoggedFirstTime(String user, Date after, Date before) {
+        Event event = Event.LOGIN;
+        return getDateForUserAndEventFirstTime(user, event, after, before);
+    }
+
+    @Override
+    public Date getDateWhenUserSolvedTask(String user, int task, Date after, Date before) {
+        Event event = Event.SOLVE_TASK;
+        return getDateWhenUserEventHappendWithTaskFirstTime(user, event, task, after, before);
+    }
+
+    @Override
+    public Date getDateWhenUserDoneTask(String user, int task, Date after, Date before) {
+        Event event = Event.DONE_TASK;
+        return getDateWhenUserEventHappendWithTaskFirstTime(user, event, task, after, before);
+    }
+
+    @Override
+    public Set<Date> getDatesWhenUserWroteMessage(String user, Date after, Date before) {
+        Event event = Event.WRITE_MESSAGE;
+        return getDatesForUserAndEvent(user, event, after,  before);
+    }
+
+    @Override
+    public Set<Date> getDatesWhenUserDownloadedPlugin(String user, Date after, Date before) {
+        Event event = Event.DOWNLOAD_PLUGIN;
+        return getDatesForUserAndEvent(user, event, after,  before);
     }
 
     public class LogEntry {
