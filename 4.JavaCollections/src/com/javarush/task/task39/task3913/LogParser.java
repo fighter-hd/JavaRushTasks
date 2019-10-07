@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -504,13 +506,17 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
     public Set<Object> execute(String query) {
         String[] queryElements = query.split(" ");
 
-        String currentQuery;
         if (queryElements.length == 2) {
-            currentQuery = queryElements[1];
-        } else {
-            return new HashSet<>();
+            return getSimpleQuerySet(queryElements[1]);
+
+        } else if (queryElements.length > 2) {
+            return getFullQuerySet(getFullQueryData(query));
         }
 
+        return new HashSet<>();
+    }
+
+    private Set<Object> getSimpleQuerySet(String currentQuery) {
         switch (currentQuery) {
             case "ip":
                 return new HashSet<>(getUniqueIPs(null, null));
@@ -536,6 +542,317 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
                                 ()->new HashSet<>(),
                                 (set, item)->set.add(item.getStatus()),
                                 (set1, set2)->set1.addAll(set2)));
+
+            default:
+                return new HashSet<>();
+        }
+    }
+
+    public String[] getFullQueryData(String query) {
+        String tag = null;
+        String field = null;
+        String value = null;
+        String after = null;
+        String before = null;
+
+        Pattern pattern = Pattern.compile("get (?<tag>\\w+)(\\sfor\\s(?<field>\\w+)\\s=\\s"
+                                        + "\"(?<value>.{1,40})\")?(\\sand date between\\s\""
+                                        + "(?<after>[\\d]+.[\\d]+.[\\d]+ [\\d]+:[\\d]+:[\\d]+)\"\\sand\\s"
+                                        + "\"(?<before>[\\d]+.[\\d]+.[\\d]+ [\\d]+:[\\d]+:[\\d]+)\")?");
+
+        Matcher matcher = pattern.matcher(query);
+
+        while (matcher.find()) {
+            tag = matcher.group("tag");
+            field = matcher.group("field");
+            value = matcher.group("value");
+            after = matcher.group("after");
+            before = matcher.group("before");
+        }
+
+        return new String[]{tag, field, value, after, before};
+    }
+
+    public Set<Object> getFullQuerySet(String[] queryData) {
+        String tag = queryData[0];
+        String field = queryData[1];
+        String value = queryData[2];
+
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        Date after = null;
+        Date before = null;
+
+        try {
+            if (queryData[3] != null) {
+                after = format.parse(queryData[3]);
+            }
+
+            if (queryData[4] != null) {
+                before = format.parse(queryData[4]);
+            }
+        } catch (ParseException ignore) {}
+
+        switch (field) {
+            case "ip":
+                return getInformationForIpQuery(value, tag, after, before);
+
+            case "user":
+                return getInformationForUserQuery(value, tag, after, before);
+
+            case "date":
+                return getInformationForDateQuery(value, tag);
+
+            case "event":
+                return getInformationForEventQuery(value, tag, after, before);
+
+            case "status":
+                return getInformationForStatusQuery(value, tag, after, before);
+        }
+
+        return new HashSet<>();
+    }
+
+    private Set<Object> getInformationForIpQuery(String value, String tag, Date after, Date before) {
+        Set<Object> resultInformation = new HashSet<>();
+
+        if (value != null) {
+            Set<String> ips = getUniqueIPs(after, before);
+
+            for (String ip : ips) {
+                if (value.equalsIgnoreCase(ip)) {
+
+                    switch (tag) {
+                        case "user":
+                            resultInformation.addAll(getUsersForIP(ip, after, before));
+                            return resultInformation;
+
+                        case "date":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getIp().equalsIgnoreCase(ip))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(new Date(item.getDate())),
+                                            AbstractCollection::addAll);
+
+                        case "event":
+                            resultInformation.addAll(getEventsForIP(ip, after, before));
+                            return resultInformation;
+
+                        case "status":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getIp().equalsIgnoreCase(ip))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(item.getStatus()),
+                                            AbstractCollection::addAll);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return resultInformation;
+    }
+
+    private Set<Object> getInformationForUserQuery(String value, String tag, Date after, Date before) {
+        Set<Object> resultInformation = new HashSet<>();
+
+        if (value != null) {
+            Set<String> users = getAllUsersInGivenPeriodOfTime(after, before);
+
+            for (String user : users) {
+                if (value.equals(user)) {
+
+                    switch (tag) {
+                        case "ip":
+                            resultInformation.addAll(getIPsForUser(user, after, before));
+                            return resultInformation;
+
+                        case "date":
+                            return getLogEntries().stream()
+                                                  .filter(e -> e.getUser().equals(user))
+                                                  .collect(
+                                                          HashSet::new,
+                                                          (set, item)->set.add(new Date(item.getDate())),
+                                                          AbstractCollection::addAll);
+
+                        case "event":
+                            resultInformation.addAll(getEventsForUser(user, after, before));
+                            return resultInformation;
+
+                        case "status":
+                            return getLogEntries().stream()
+                                                  .filter(e -> e.getUser().equals(user))
+                                                  .collect(
+                                                          HashSet::new,
+                                                          (set, item)->set.add(item.getStatus()),
+                                                          AbstractCollection::addAll);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return resultInformation;
+    }
+
+    private Set<Object> getInformationForDateQuery(String value, String tag) {
+        if (value != null) {
+            Set<Long> dateLongSet = getLogEntries().stream()
+                                                   .collect(
+                                                           HashSet::new,
+                                                           (set, item)->set.add(item.getDate()),
+                                                           AbstractCollection::addAll);
+
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+            Date dateValue = null;
+            try {
+                dateValue = format.parse(value);
+            } catch (ParseException ignore) {}
+
+            for (Long dateLong : dateLongSet) {
+                if (dateValue != null && dateValue.getTime() == dateLong) {
+
+                    switch (tag) {
+                        case "ip":
+                            return getLogEntries().stream()
+                                                  .filter(e -> e.getDate().equals(dateLong))
+                                                  .collect(
+                                                          HashSet::new,
+                                                          (set, item) -> set.add(item.getIp()),
+                                                          AbstractCollection::addAll);
+
+                        case "user":
+                            return getLogEntries().stream()
+                                                  .filter(e -> e.getDate().equals(dateLong))
+                                                  .collect(
+                                                          HashSet::new,
+                                                          (set, item) -> set.add(item.getUser()),
+                                                          AbstractCollection::addAll);
+
+                        case "event":
+                            return getLogEntries().stream()
+                                                  .filter(e -> e.getDate().equals(dateLong))
+                                                  .collect(
+                                                          HashSet::new,
+                                                          (set, item) -> set.add(item.getEvent()),
+                                                          AbstractCollection::addAll);
+
+                        case "status":
+                            return getLogEntries().stream()
+                                                  .filter(e -> e.getDate().equals(dateLong))
+                                                  .collect(
+                                                          HashSet::new,
+                                                          (set, item) -> set.add(item.getStatus()),
+                                                          AbstractCollection::addAll);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return new HashSet<>();
+    }
+
+    private Set<Object> getInformationForEventQuery(String value, String tag, Date after, Date before) {
+        Set<Object> resultInformation = new HashSet<>();
+
+        if (value != null) {
+            Set<Event> eventSet = getAllEvents(after, before);
+
+            for (Event event : eventSet) {
+                if (value.equalsIgnoreCase(event.toString())) {
+
+                    switch (tag) {
+                        case "ip":
+                            resultInformation.addAll(getIPsForEvent(event, after, before));
+                            return resultInformation;
+
+                        case "user":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getEvent().equals(event))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(item.getUser()),
+                                            AbstractCollection::addAll);
+
+                        case "date":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getEvent().equals(event))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(new Date(item.getDate())),
+                                            AbstractCollection::addAll);
+
+                        case "status":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getEvent().equals(event))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(item.getStatus()),
+                                            AbstractCollection::addAll);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return resultInformation;
+    }
+
+    private Set<Object> getInformationForStatusQuery(String value, String tag, Date after, Date before) {
+        if (value != null) {
+            Set<Status> statusSet = getLogEntriesInGivenPeriodOfTime(after, before)
+                                                    .stream()
+                                                    .collect(
+                                                            HashSet::new,
+                                                            (set, item)->set.add(item.getStatus()),
+                                                            AbstractCollection::addAll);;
+
+            for (Status status : statusSet) {
+                if (value.equalsIgnoreCase(status.toString())) {
+
+                    switch (tag) {
+                        case "ip":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getStatus().equals(status))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(item.getIp()),
+                                            AbstractCollection::addAll);
+
+                        case "user":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getStatus().equals(status))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(item.getUser()),
+                                            AbstractCollection::addAll);
+
+                        case "date":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getStatus().equals(status))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(new Date(item.getDate())),
+                                            AbstractCollection::addAll);
+
+                        case "event":
+                            return getLogEntries().stream()
+                                    .filter(e -> e.getStatus().equals(status))
+                                    .collect(
+                                            HashSet::new,
+                                            (set, item)->set.add(item.getEvent()),
+                                            AbstractCollection::addAll);
+                    }
+
+                    break;
+                }
+            }
         }
 
         return new HashSet<>();
@@ -548,6 +865,7 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
         Event event;
         Integer taskNumber;
         Status status;
+
         public LogEntry(String ip, String user, String date, String event, String status) {
             this.ip = ip;
             this.user = user;

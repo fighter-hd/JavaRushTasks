@@ -6,15 +6,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Solution {
     public static void main(String[] args) {
         LogParser logParser = new LogParser(Paths.get("C:\\Users\\Gans\\Desktop\\Java_instructions\\For_Tests"));
-        testGetNumberOfUniqueIPs(logParser);
-        testGetUniqueIPs(logParser);
-        testGetIPsForUser(logParser);
-        testGetIPsForEvent(logParser);
-        testGetIPsForStatus(logParser);
+//        testGetNumberOfUniqueIPs(logParser);
+//        testGetUniqueIPs(logParser);
+//        testGetIPsForUser(logParser);
+//        testGetIPsForEvent(logParser);
+//        testGetIPsForStatus(logParser);
+
+        String s = "get ip for user = \"Eduard Petrovich Morozko\" and date between \"11.12.2013 0:00:00\" and \"03.01.2014 23:59:59\"";
+        Pattern pattern = Pattern.compile("get (?<tag>\\w+)(\\sfor\\s(?<field>\\w+)\\s=\\s" +
+                                          "\"(?<value>.{1,40})\")?(\\sand date between\\s\"" +
+                                          "(?<after>[\\d]+.[\\d]+.[\\d]+ [\\d]+:[\\d]+:[\\d]+)\"\\sand\\s" +
+                                          "\"(?<before>[\\d]+.[\\d]+.[\\d]+ [\\d]+:[\\d]+:[\\d]+)\")?");
+        Matcher matcher = pattern.matcher(s);
+        while (matcher.find()) {
+            System.out.println(matcher.group("tag"));
+            System.out.println(matcher.group("field"));
+            System.out.println(matcher.group("value"));
+            System.out.println(matcher.group("after"));
+            System.out.println(matcher.group("before"));
+        }
     }
 
     private static void testGetNumberOfUniqueIPs(LogParser logParser) {
