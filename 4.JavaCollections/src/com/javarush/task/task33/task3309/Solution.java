@@ -111,7 +111,7 @@ public class Solution {
         cat.age = 6;
         cat.weight = 4;
 
-        System.out.println(toXmlWithComment(cat,"second", "it's a comment"));
+        System.out.println(toXmlWithComment(cat,"age", "it's a comment"));
     }
 
     @XmlType(name = "cat")
