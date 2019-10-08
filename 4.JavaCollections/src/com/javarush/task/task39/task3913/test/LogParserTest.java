@@ -1066,21 +1066,6 @@ public class LogParserTest {
 
     @Test
     public void executeFullTest() {
-        String query1 = "get ip for user = \"Eduard Petrovich Morozko\" and date between \"11.12.2013 0:00:00\" and \"03.01.2014 23:59:59\"";
-        Set<Object> actual1 = logParser.execute(query1);
-        Set<Object> expected1 = new HashSet<>();
-        expected1.add("127.0.0.1");
-        expected1.add("146.34.15.5");
-        assertEquals(expected1, actual1);
-
-        String query2 = "get status for event = \"WRITE_MESSAGE\"";
-        Set<Object> actual2 = logParser.execute(query2);
-        Set<Object> expected2 = new HashSet<>();
-        expected2.add(Status.OK);
-        expected2.add(Status.ERROR);
-        expected2.add(Status.FAILED);
-        assertEquals(expected2, actual2);
-
         String query3 = "get user for date = \"30.08.2012 16:08:13\"";
         Set<Object> actual3 = logParser.execute(query3);
         Set<Object> expected3 = new HashSet<>();
@@ -1097,7 +1082,7 @@ public class LogParserTest {
         String query5 = "get date for ip = \"146.34.15.5\"";
         Set<Object> actual5 = logParser.execute(query5);
 
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat format = new SimpleDateFormat("d.M.y H:m:s", Locale.ENGLISH);
         Date date1 = null;
         Date date2 = null;
         Date date3 = null;
@@ -1127,5 +1112,141 @@ public class LogParserTest {
         expected6.add("Vasya Pupkin");
         expected6.add("Eduard Petrovich Morozko");
         assertEquals(expected6, actual6);
+
+        String query7 = "get ip for event = \"WRITE_MESSAGE\" and date between \"11.12.2013 10:11:12\" and \"21.10.2030 00:00:00\"";
+        Set<Object> actual7 = logParser.execute(query7);
+        Set<Object> expected7 = new HashSet<>();
+        expected7.add("146.34.15.5");
+        expected7.add("127.0.0.1");
+        assertEquals(expected7, actual7);
+
+        String query8 = "get status for user = \"Eduard Petrovich Morozko\" and date between \"13.09.2013 5:04:50\" and \"12.12.2013 21:56:30\"";
+        Set<Object> actual8 = logParser.execute(query8);
+        Set<Object> expected8 = new HashSet<>();
+        expected8.add(Status.FAILED);
+        assertEquals(expected8, actual8);
+    }
+
+    @Test
+    public void testUserForIP() {
+
+    }
+
+    @Test
+    public void testDateForIP() {
+
+    }
+
+    @Test
+    public void testEventForIP() {
+
+    }
+
+    @Test
+    public void testStatusForIP() {
+
+    }
+
+    @Test
+    public void testIpForUser() {
+        String query1 = "get ip for user = \"Eduard Petrovich Morozko\" and date between \"11.12.2013 0:00:00\" and \"03.01.2014 23:59:59\"";
+        Set<Object> actual1 = logParser.execute(query1);
+        Set<Object> expected1 = new HashSet<>();
+        expected1.add("127.0.0.1");
+        expected1.add("146.34.15.5");
+        assertEquals(expected1, actual1);
+
+        String query11 = "get ip for user = \"Eduard Petrovich Morozko\" and date between \"11.12.2013 10:11:12\" and \"12.12.2013 23:59:59\"";
+        Set<Object> actual11 = logParser.execute(query11);
+        Set<Object> expected11 = new HashSet<>();
+        expected11.add("146.34.15.5");
+        assertEquals(expected11, actual11);
+
+        String query12 = "get ip for user = \"Eduard Petrovich Morozko\" and date between \"11.12.2013 0:00:00\" and \"12.12.2013 21:56:30\"";
+        Set<Object> actual12 = logParser.execute(query12);
+        Set<Object> expected12 = new HashSet<>();
+        expected12.add("127.0.0.1");
+        assertEquals(expected12, actual12);
+    }
+
+    @Test
+    public void testDateForUser() {
+
+    }
+
+    @Test
+    public void testEventForUser() {
+
+    }
+
+    @Test
+    public void testStatusForUser() {
+
+    }
+
+    @Test
+    public void testIpForDate() {
+
+    }
+
+    @Test
+    public void testUserForDate() {
+
+    }
+
+    @Test
+    public void testEventForDate() {
+
+    }
+
+    @Test
+    public void testStatusForDate() {
+
+    }
+
+    @Test
+    public void testIpForEvent() {
+
+    }
+
+    @Test
+    public void testUserForEvent() {
+
+    }
+
+    @Test
+    public void testDateForEvent() {
+
+    }
+
+    @Test
+    public void testStatusForEvent() {
+        String query1 = "get status for event = \"DONE_TASK\" and date between \"30.08.2012 16:08:40\" and \"01.01.2025 00:00:00\"";
+        Set<Object> actual1 = logParser.execute(query1);
+        Set<Object> expected1 = new HashSet<>();
+//        expected1.add(Status.OK);
+//        expected1.add(Status.ERROR);
+        expected1.add(Status.FAILED);
+        assertEquals(expected1, actual1);
+    }
+
+    @Test
+    public void testIpForStatus() {
+
+    }
+
+    @Test
+    public void testUserForStatus() {
+
+    }
+
+    @Test
+    public void testDateForStatus() {
+
+    }
+
+    @Test
+    public void testEventForStatus() {
+
     }
 }

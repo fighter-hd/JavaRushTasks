@@ -18,12 +18,12 @@ public class Solution {
 //        testGetIPsForEvent(logParser);
 //        testGetIPsForStatus(logParser);
 
-        String s = "get ip for user = \"Eduard Petrovich Morozko\" and date between \"11.12.2013 0:00:00\" and \"03.01.2014 23:59:59\"";
+        String query = "get status for event = \"DONE_TASK\" and date between \"30.08.2012 16:08:40\" and \"01.01.2025 00:00:00\"";
         Pattern pattern = Pattern.compile("get (?<tag>\\w+)(\\sfor\\s(?<field>\\w+)\\s=\\s" +
-                                          "\"(?<value>.{1,40})\")?(\\sand date between\\s\"" +
+                                          "\"(?<value>.+?)\")?(\\sand date between\\s\"" +
                                           "(?<after>[\\d]+.[\\d]+.[\\d]+ [\\d]+:[\\d]+:[\\d]+)\"\\sand\\s" +
                                           "\"(?<before>[\\d]+.[\\d]+.[\\d]+ [\\d]+:[\\d]+:[\\d]+)\")?");
-        Matcher matcher = pattern.matcher(s);
+        Matcher matcher = pattern.matcher(query);
         while (matcher.find()) {
             System.out.println(matcher.group("tag"));
             System.out.println(matcher.group("field"));
