@@ -19,6 +19,16 @@ public class Controller {
         this.providers = providers;
     }
 
+    public void scan() {
+        int vacancyCount = 0;
+
+        for (Provider provider : providers) {
+            vacancyCount += provider.getJavaVacancies("stub").size();
+        }
+
+        System.out.println(vacancyCount);
+    }
+
     @Override
     public String toString() {
         return "Controller{" +
