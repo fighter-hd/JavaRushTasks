@@ -10,7 +10,7 @@ public class HtmlView implements View {
 
     @Override
     public void update(List<Vacancy> vacancies) {
-
+        
     }
 
     @Override
