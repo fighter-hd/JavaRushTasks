@@ -16,6 +16,7 @@ public class Controller {
         } else {
             throw new IllegalArgumentException("Adding less than one provider is invalid operation");
         }
+
         this.providers = providers;
     }
 
@@ -23,7 +24,7 @@ public class Controller {
         int vacancyCount = 0;
 
         for (Provider provider : providers) {
-            vacancyCount += provider.getJavaVacancies("stub").size();
+            vacancyCount += provider.getJavaVacancies("Kiev").size();
         }
 
         System.out.println(vacancyCount);
