@@ -35,12 +35,10 @@ public class HHStrategy implements Strategy {
 
                     String salary = element.getElementsByAttributeValueContaining("data-qa", "compensation").text();
                     vacancy.setSalary(salary.length() == 0 ? "" : salary);
-                    System.out.println(salary.length() == 0 ? "" : salary);
 
                     vacancy.setTitle(element.getElementsByAttributeValueContaining("data-qa", "-title").text());
                     vacancy.setCity(element.getElementsByAttributeValueContaining("data-qa", "address").text());
                     vacancy.setCompanyName(element.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-employer").text());
-                    System.out.println(element.getElementsByAttributeValueContaining("data-qa", "employer").text());
                     vacancy.setUrl(element.getElementsByAttributeValueContaining("data-qa", "-title").attr("href"));
 
                     vacancies.add(vacancy);
