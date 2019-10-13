@@ -1,5 +1,6 @@
 package com.javarush.task.task28.task2810;
 
+import com.javarush.task.task28.task2810.model.Model;
 import com.javarush.task.task28.task2810.model.Provider;
 
 import java.util.ArrayList;
@@ -7,33 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Controller {
-    private Provider[] providers;
+    private Model model;
 
-    public Controller(Provider... providers) {
-        if (providers != null && providers.length != 0) {
-            this.providers = providers.clone();
-
-        } else {
-            throw new IllegalArgumentException("Adding less than one provider is invalid operation");
+    public Controller(Model model) {
+        if (model == null) {
+            throw new IllegalArgumentException("Model can not be null");
         }
 
-        this.providers = providers;
+        this.model = model;
     }
 
-    public void scan() {
-        int vacancyCount = 0;
-
-        for (Provider provider : providers) {
-            vacancyCount += provider.getJavaVacancies("Kiev").size();
-        }
-
-        System.out.println(vacancyCount);
-    }
-
-    @Override
-    public String toString() {
-        return "Controller{" +
-                "providers=" + Arrays.toString(providers) +
-                '}';
+    public void onCitySelect(String cityName) {
+        model.selectCity(cityName);
     }
 }
