@@ -14,8 +14,7 @@ public class HtmlView implements View {
     private Controller controller;
     private final String filePath = "./4.JavaCollections/src/"
                                     + this.getClass().getPackage().getName().replace('.', '/')
-                            //todo
-                                    + "/vacanciesCopy.html";
+                                    + "/vacancies.html";
 
     @Override
     public void update(List<Vacancy> vacancies) {
