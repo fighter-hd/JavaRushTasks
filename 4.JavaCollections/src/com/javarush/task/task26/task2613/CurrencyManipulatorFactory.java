@@ -1,5 +1,6 @@
 package com.javarush.task.task26.task2613;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,15 +10,19 @@ public class CurrencyManipulatorFactory {
     private CurrencyManipulatorFactory() {}
 
     public static CurrencyManipulator getManipulatorByCurrencyCode(String currencyCode) {
-        String currencyCodeSmallCase = currencyCode.toLowerCase();
+        String currencyCodeUpperCase = currencyCode.toUpperCase();
 
-        if (map.containsKey(currencyCodeSmallCase)) {
-            return map.get(currencyCodeSmallCase);
+        if (map.containsKey(currencyCodeUpperCase)) {
+            return map.get(currencyCodeUpperCase);
 
         } else {
-            CurrencyManipulator manipulator = new CurrencyManipulator(currencyCode);
-            map.put(currencyCodeSmallCase, manipulator);
+            CurrencyManipulator manipulator = new CurrencyManipulator(currencyCodeUpperCase);
+            map.put(currencyCodeUpperCase, manipulator);
             return manipulator;
         }
+    }
+
+    public static Collection<CurrencyManipulator> getAllCurrencyManipulators() {
+        return map.values();
     }
 }

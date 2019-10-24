@@ -32,6 +32,16 @@ public class CurrencyManipulator {
         return totalAmount;
     }
 
+    public boolean hasMoney() {
+        if (getTotalAmount() <= 0) {
+            ConsoleHelper.writeMessage("No money available.");
+            return false;
+
+        }
+
+        return true;
+    }
+
     public String getCurrencyCode() {
         return currencyCode;
     }
