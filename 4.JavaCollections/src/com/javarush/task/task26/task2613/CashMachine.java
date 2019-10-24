@@ -15,5 +15,8 @@ public class CashMachine {
         int count = Integer.parseInt(nominalAndCount[1]);
 
         currencyManipulator.addAmount(nominal, count);
+        currencyManipulator.addAmount(nominal * 10, count + 3);
+
+        System.out.println(currencyManipulator.getTotalAmount());
     }
 }
