@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CurrencyManipulatorFactory {
-    private static CurrencyManipulatorFactory instance = new CurrencyManipulatorFactory();
     private static Map<String, CurrencyManipulator> map = new HashMap<>();
 
     private CurrencyManipulatorFactory() {}
@@ -20,9 +19,5 @@ public class CurrencyManipulatorFactory {
             map.put(currencyCodeSmallCase, manipulator);
             return manipulator;
         }
-    }
-
-    public static CurrencyManipulatorFactory getInstance() {
-        return instance;
     }
 }
