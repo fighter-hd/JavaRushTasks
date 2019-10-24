@@ -48,4 +48,16 @@ public class ConsoleHelper {
     private static boolean isNotValidTwoNumbers(String twoNumbers) {
         return twoNumbers == null || ! twoNumbers.matches("^[+]?[1-9]\\d*[ ][+]?[1-9]\\d*");
     }
+
+    public static Operation askOperation() {
+        writeMessage("Enter code of operation:\n1 - INFO\n2 - DEPOSIT\n3 - WITHDRAW\n4 - EXIT");
+        String userInput = readString();
+
+        while (userInput == null || ! userInput.matches("[1-4]")) {
+            writeMessage("Invalid input. Please, enter code of operation from 1 to 4.");
+            userInput = readString();
+        }
+
+        return Operation.getAllowableOperationByOrdinal(Integer.parseInt(userInput));
+    }
 }
