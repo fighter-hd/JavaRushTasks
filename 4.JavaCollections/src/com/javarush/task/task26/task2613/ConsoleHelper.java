@@ -1,5 +1,7 @@
 package com.javarush.task.task26.task2613;
 
+import com.javarush.task.task26.task2613.exception.InterruptOperationException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,16 +13,22 @@ public class ConsoleHelper {
         System.out.println(message);
     }
 
-    public static String readString() {
+    public static String readString() throws InterruptOperationException {
         try {
-            return bis.readLine();
+            String userInput = bis.readLine();
+
+            if (userInput.toLowerCase().contains("exit")) {
+                throw new InterruptOperationException();
+            }
+
+            return userInput;
 
         } catch (IOException ignore) { /* do nothing */ }
 
         return null;
     }
 
-    public static String askCurrencyCode() {
+    public static String askCurrencyCode() throws InterruptOperationException {
         writeMessage("Enter currency code in 3 letter.");
         String userInput = readString();
 
@@ -32,7 +40,7 @@ public class ConsoleHelper {
         return userInput.toUpperCase();
     }
 
-    public static String[] getValidTwoDigits(String currencyCode) {
+    public static String[] getValidTwoDigits(String currencyCode) throws InterruptOperationException {
         String requestMessage = "Enter the nominal of the currency and the amount, separated by a space (two positive numbers).";
         writeMessage(requestMessage);
         String userInput = readString();
@@ -49,7 +57,7 @@ public class ConsoleHelper {
         return twoNumbers == null || ! twoNumbers.matches("^[+]?[1-9]\\d*[ ][+]?[1-9]\\d*");
     }
 
-    public static Operation askOperation() {
+    public static Operation askOperation() throws InterruptOperationException {
         writeMessage("Enter code of operation:\n1 - INFO\n2 - DEPOSIT\n3 - WITHDRAW\n4 - EXIT");
         String userInput = readString();
 
