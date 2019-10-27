@@ -10,7 +10,8 @@ public class CashMachine {
         Locale.setDefault(Locale.ENGLISH);
 
         try {
-            Operation requiredOperation;
+            Operation requiredOperation = Operation.LOGIN;
+            CommandExecutor.execute(requiredOperation);
 
             do {
                 requiredOperation = ConsoleHelper.askOperation();
