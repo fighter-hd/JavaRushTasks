@@ -16,7 +16,7 @@ class DepositCommand implements Command {
         ConsoleHelper.writeMessage(res.getString("before"));
 
         String currencyCode = ConsoleHelper.askCurrencyCode();
-        String[] nominalAndCount = ConsoleHelper.getValidTwoDigits(currencyCode);
+        String[] nominalAndCount = ConsoleHelper.getValidTwoDigits();
 
         CurrencyManipulator currencyManipulator = CurrencyManipulatorFactory.getManipulatorByCurrencyCode(currencyCode);
 

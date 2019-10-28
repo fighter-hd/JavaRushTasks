@@ -34,12 +34,7 @@ public class CurrencyManipulator {
     }
 
     public boolean hasMoney() {
-        if (getTotalAmount() <= 0) {
-//            ConsoleHelper.writeMessage("No money available.");
-            return false;
-        }
-
-        return true;
+        return getTotalAmount() > 0;
     }
 
     public boolean isAmountAvailable(int expectedAmount) {

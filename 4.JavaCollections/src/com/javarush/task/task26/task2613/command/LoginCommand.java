@@ -8,40 +8,37 @@ import java.util.ResourceBundle;
 
 public class LoginCommand implements Command {
     private ResourceBundle validCreditCards = ResourceBundle.getBundle(CashMachine.class.getPackage().getName()
-                                                                        + ".resources.verifiedCards");
+                                                                                  + ".resources.verifiedCards");
+
+    private ResourceBundle res = ResourceBundle.getBundle(CashMachine.class.getPackage().getName()
+                                                                          + ".resources.login_en");
 
     @Override
     public void execute() throws InterruptOperationException {
-        ConsoleHelper.writeMessage("Enter card number - 12 digit.");
-        String cardNumber = ConsoleHelper.readString();
+        ConsoleHelper.writeMessage(res.getString("before"));
+        ConsoleHelper.writeMessage(res.getString("specify.data"));
 
-        ConsoleHelper.writeMessage("Enter card pin code - 4 digit");
+        String cardNumber = ConsoleHelper.readString();
         String pin = ConsoleHelper.readString();
 
         while (true) {
-            if (isInvalidCardNumber(cardNumber)) {
-                ConsoleHelper.writeMessage("Invalid card number. Try again. Enter card number - 12 digit:");
-                cardNumber = ConsoleHelper.readString();
+            if (isInvalidCardNumber(cardNumber) || isInvalidPinCode(pin)) {
+                ConsoleHelper.writeMessage(res.getString("try.again.with.details"));
+                ConsoleHelper.writeMessage(res.getString("try.again.or.exit"));
 
-            } else if (isInvalidPinCode(pin)) {
-                ConsoleHelper.writeMessage("Invalid card pin code. Try again. Enter card pin code - 4 digit:");
+                cardNumber = ConsoleHelper.readString();
                 pin = ConsoleHelper.readString();
 
             } else {
-                if ( ! this.validCreditCards.containsKey(cardNumber)) {
-                    ConsoleHelper.writeMessage("Card number is not found. Try again:");
+                if ( ! this.validCreditCards.containsKey(cardNumber) || ! pin.equals(this.validCreditCards.getString(cardNumber))) {
+                    ConsoleHelper.writeMessage(String.format(res.getString("not.verified.format"), cardNumber));
+                    ConsoleHelper.writeMessage(res.getString("try.again.or.exit"));
                     cardNumber = ConsoleHelper.readString();
-                    continue;
-
-                }
-
-                if ( ! pin.equals(this.validCreditCards.getString(cardNumber) ) ) {
-                    ConsoleHelper.writeMessage("Pin code is wrong. Enter pin code again:");
                     pin = ConsoleHelper.readString();
                     continue;
                 }
 
-                ConsoleHelper.writeMessage("Verification success.");
+                ConsoleHelper.writeMessage(String.format(res.getString("success.format"), cardNumber));;
                 break;
             }
         }
