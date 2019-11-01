@@ -27,6 +27,10 @@ public class Model {
         this.restart();
     }
 
+    public void move(Direction direction) {
+
+    }
+
     public GameObjects getGameObjects() {
         return this.gameObjects;
     }
