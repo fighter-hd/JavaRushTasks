@@ -32,9 +32,9 @@ public class View extends JFrame {
     public void completed(int level) {
         this.update();
         JOptionPane.showMessageDialog(null,
-                                    "Level " + level + " complete.",
-                                    "Congratulations!",
-                                    JOptionPane.INFORMATION_MESSAGE);
+                                        "Level " + level + " complete.",
+                                        "Congratulations!",
+                                        JOptionPane.INFORMATION_MESSAGE);
 
         this.controller.startNextLevel();
     }
