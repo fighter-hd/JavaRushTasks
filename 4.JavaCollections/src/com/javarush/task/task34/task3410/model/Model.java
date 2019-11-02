@@ -94,45 +94,6 @@ public class Model {
         return false;
     }
 
-    private GameObject getGameObjectByDirection(GameObject gameObject, Direction direction) {
-        GameObject objectByDirection = null;
-
-        int gameObjectX = gameObject.getX();
-        int gameObjectY = gameObject.getY();
-
-        int[] nextXandY = getNextXandYbyDirection(direction, gameObjectX, gameObjectY);
-        int nextX = nextXandY[0];
-        int nextY = nextXandY[1];
-
-        for (GameObject currentObject : this.gameObjects.getAll()) {
-            if (nextX == currentObject.getX() && nextY == currentObject.getY()) {
-                objectByDirection = currentObject;
-                break;
-            }
-        }
-
-        return objectByDirection;
-    }
-
-    private int[] getNextXandYbyDirection(Direction direction, int x, int y) {
-        switch (direction) {
-            case LEFT:
-                x -= FIELD_CELL_SIZE;
-                break;
-            case RIGHT:
-                x += FIELD_CELL_SIZE;
-                break;
-            case UP:
-                y -= FIELD_CELL_SIZE;
-                break;
-            case DOWN:
-                y += FIELD_CELL_SIZE;
-                break;
-        }
-
-        return new int[]{x, y};
-    }
-
     private int[] getDeltaXandY(Direction direction) {
         int deltaX = 0;
         int deltaY = 0;
